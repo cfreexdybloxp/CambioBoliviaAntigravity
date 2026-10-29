@@ -198,9 +198,23 @@ export const ExchangeHouseDirectory: React.FC = () => {
                       )}
                     </div>
 
-                    <div className="mt-2 text-[10px] text-slate-500 flex justify-between">
-                      <span>Verificado: {formatDate(house.lastVerifiedDate)}</span>
-                      <span>Fuente: {house.source}</span>
+                    {/* Acciones Rápidas: GPS y Llamada */}
+                    <div className="mt-3 pt-3 border-t border-slate-800/60 flex items-center justify-between text-xs">
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${house.lat},${house.lng}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <MapPin className="w-3.5 h-3.5" />
+                        <span>Abrir en GPS / Maps</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+
+                      <span className="text-[10px] text-slate-500">
+                        Verificado: {formatDate(house.lastVerifiedDate)}
+                      </span>
                     </div>
 
                   </div>

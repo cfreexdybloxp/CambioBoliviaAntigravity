@@ -1,0 +1,30 @@
+name: CI & Quality Verification
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Código
+      uses: actions/checkout@v4
+
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Instalar Dependencias
+      run: npm ci
+
+    - name: Ejecutar Suite de Pruebas Matemáticas y Unitarias
+      run: npm test
+
+    - name: Compilar Paquete de Producción
+      run: npm run build

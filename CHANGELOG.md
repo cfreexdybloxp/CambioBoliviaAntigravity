@@ -6,6 +6,26 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/
 
 ---
 
+## [0.4.0] — 2026-10-29
+
+### Añadido
+- **Navegación GPS de un Clic para Casas de Cambio:**
+  - Botón "Abrir en GPS / Maps" directo en cada ficha del directorio ASFI, enlazando las coordenadas verificadas con Google Maps / OpenStreetMap.
+- **Formulario y Modal de Registro para Proveedores Formales:**
+  - Interfaz para que empresas bolivianas con NIT y registro SEPREC soliciten su incorporación al directorio.
+  - Declaración jurada obligatoria con verificación estricta de exclusión de ropa usada (Decreto Supremo Nº 28761).
+- **Nuevas Guías Económicas y Normativas Bolivianas:**
+  - Guía explicativa: *Régimen Tributario Simplificado (RTS) vs. Régimen General (SIN)* con topes de capital (D.S. 3698) y formalización.
+  - Guía práctica: *Comercio en Ciudades Fronterizas (Desaguadero, Pisiga, Yacuiba y Puerto Quijarro)* con análisis de monedas y régimen vecinal TVF.
+- **Seguridad en Alojamiento y Despliegue:**
+  - Creación de `public/_headers` con cabeceras de protección (CSP, X-Frame-Options DENY, X-Content-Type-Options nosniff) para Cloudflare Pages.
+  - Creación de `vercel.json` con reescrituras SPA y cabeceras de seguridad.
+  - Workflow de CI/CD automatizado en `.github/workflows/ci-and-deploy.yml` para validación gratuita de pruebas antes de cada despliegue.
+- **Optimización de Metadatos y Redes Sociales:**
+  - Etiquetas Open Graph y Twitter Cards añadidas en `index.html`.
+
+---
+
 ## [0.3.0] — 2026-10-29
 
 ### Añadido

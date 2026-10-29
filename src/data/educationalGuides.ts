@@ -87,5 +87,65 @@ La Aduana Nacional decomisa cualquier internación ilegal. Dichos lotes no son s
       'El contrabando arriesga la incautación total de capital y sanciones penales.',
       'Cambio Bolivia fomenta exclusivamente el comercio lícito, la confección nacional y la formalización.'
     ]
+  },
+  {
+    id: 'guia-regimen-tributario',
+    slug: 'regimen-simplificado-vs-general-bolivia',
+    title: 'Régimen Simplificado (RTS) vs. Régimen General: ¿Qué impuestos paga tu negocio en Bolivia?',
+    category: 'Normativa',
+    readingTimeMinutes: 5,
+    summary: 'Aprenda qué régimen del Servicio de Impuestos Nacionales (SIN) le corresponde según su capital, si debe emitir factura y cómo evitar multas tributarias.',
+    sourceReference: 'Decreto Supremo Nº 24484 y Decreto Supremo Nº 3698 (Actualización del RTS - Servicio de Impuestos Nacionales).',
+    content: `
+### 1. ¿Qué es el Régimen Tributario Simplificado (RTS)?
+El RTS es un régimen especial creado para pequeños contribuyentes:
+- **Comerciantes minoristas:** Quienes venden al consumidor final en quioscos o puestos de mercado.
+- **Artesanos:** Quienes transforman materia prima en talleres pequeños de confección o manufactura.
+- **Vivanderos:** Vendedores de alimentos en puestos fijos o ambulantes.
+
+### 2. Requisitos y Límites de Capital (D.S. 3698):
+- Capital de operación: **Entre 12.001 Bs y 60.000 Bs**.
+- Ventas anuales: No deben superar los **184.000 Bs**.
+- **No emiten factura.** Pagan una cuota fija bimestral al SIN según su categoría (de 47 Bs a 350 Bs cada dos meses).
+
+### 3. ¿Cuándo debes pasar al Régimen General?
+Si tu capital supera los 60.000 Bs, tus ventas exceden los 184.000 Bs o tienes un precio unitario de venta superior al tope legal (artesanías > 640 Bs, comercio > 480 Bs), debes inscribirte en el **Régimen General**:
+- Emisión obligatoria de facturas (Facturación en Línea / SIAT).
+- Pago mensual del **IVA (13%)** en Formulario 200 y del **IT (3%)** en Formulario 400.
+- Pago anual del **IUE (25%)** en Formulario 500.
+    `,
+    keyTakeaways: [
+      'El RTS exime de emitir factura a microcomerciantes con capital menor a 60.000 Bs.',
+      'Los negocios mayoristas o con capital superior deben operar en el Régimen General.',
+      'Las compras formales con factura permiten descargar Crédito Fiscal IVA.'
+    ]
+  },
+  {
+    id: 'guia-comercio-frontera',
+    slug: 'claves-cambiarias-comercio-frontera-bolivia',
+    title: 'Comercio en Ciudades Fronterizas: Desaguadero, Pisiga, Yacuiba y Puerto Quijarro',
+    category: 'Comercio e Importación',
+    readingTimeMinutes: 6,
+    summary: 'Estrategias cambiarias y precauciones aduaneras para el comercio formal en las principales fronteras con Perú, Chile, Argentina y Brasil.',
+    sourceReference: 'Aduana Nacional de Bolivia y Acuerdos de Tránsito Fronterizo del Mercosur y la CAN.',
+    content: `
+### 1. Dinámica Cambiaria por Frontera
+- **Desaguadero (Frontera Perú):** Operaciones intensivas en Soles (PEN) y Dólares (USD). Alta demanda de textiles y confección. Es vital calcular la tasa cruzada PEN/BOB antes de pagar en moneda extranjera.
+- **Pisiga / Tambo Quemado (Frontera Chile):** Puertos de entrada de mercancía asiática nacionalizada vía Iquique/Arica. Las liquidaciones aduaneras de fletes marítimos se pactan en USD.
+- **Yacuiba / Bermejo / Villazón (Frontera Argentina):** Alta volatilidad del Peso Argentino (ARS). Se recomienda operar con cotizaciones de ventanilla del día para evitar desfasajes por inflación cambiaria.
+- **Puerto Quijarro / Guayaramerín (Frontera Brasil):** Comercio activo en Reales (BRL). Utilizado para insumos plásticos, maquinaria y agroindustria.
+
+### 2. Régimen de Tránsito Vecinal Fronterizo (TVF)
+Los residentes de municipios fronterizos pueden internar pequeñas cantidades de víveres o consumo familiar libre de tributos dentro de una cuota de subsistencia. Sin embargo, **cualquier lote con fines de reventa o comercio interior exige importación a consumo formal con DUI/DIM**.
+
+### 3. Buenas Prácticas para Emprendedores
+- Nunca transporte efectivo en montos superiores al límite legal sin declaración de divisas ante la Aduana (10.000 USD o su equivalente).
+- Exija factura de exportación o comprobante comercial formal en el país de origen para justificar el valor CIF ante el recinto aduanero boliviano.
+    `,
+    keyTakeaways: [
+      'Cada frontera boliviana tiene una divisa dominante (PEN, ARS, CLP o BRL) triangulada con el USD y el BOB.',
+      'El régimen vecinal no autoriza la reventa mayorista en el eje central sin nacionalización.',
+      'Utilice nuestras calculadoras de costo de importación para evaluar la viabilidad antes de viajar.'
+    ]
   }
 ];

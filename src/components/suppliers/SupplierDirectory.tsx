@@ -1,14 +1,35 @@
 import React, { useState } from 'react';
 import { SUPPLIERS } from '../../data/suppliers';
+import { Supplier } from '../../types';
 import { 
   ShieldAlert, 
   CheckCircle2, 
   MapPin, 
-  Phone
+  Phone, 
+  PlusCircle, 
+  X, 
+  Check, 
+  Building2 
 } from 'lucide-react';
 
 export const SupplierDirectory: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
+  const [showRegisterModal, setShowRegisterModal] = useState<boolean>(false);
+  const [customSuppliers, setCustomSuppliers] = useState<Supplier[]>([]);
+
+  // Formulario de nuevo proveedor
+  const [name, setName] = useState<string>('');
+  const [category, setCategory] = useState<Supplier['category']>('Textiles e Indumentaria Nueva');
+  const [city, setCity] = useState<string>('');
+  const [department, setDepartment] = useState<string>('La Paz');
+  const [address, setAddress] = useState<string>('');
+  const [productDescription, setProductDescription] = useState<string>('');
+  const [minOrder, setMinOrder] = useState<string>('20 unidades');
+  const [priceRange, setPriceRange] = useState<string>('Bs 50 - Bs 100');
+  const [phone, setPhone] = useState<string>('+591 ');
+  const [nitOrRegistry, setNitOrRegistry] = useState<string>('NIT ');
+  const [acceptedLegalNotice, setAcceptedLegalNotice] = useState<boolean>(false);
+  const [formSuccess, setFormSuccess] = useState<boolean>(false);
 
   const categories = [
     'Todos',
@@ -18,21 +39,68 @@ export const SupplierDirectory: React.FC = () => {
     'Ferretería y Herramientas'
   ];
 
-  const filteredSuppliers = SUPPLIERS.filter(
+  const allSuppliers = [...SUPPLIERS, ...customSuppliers];
+
+  const filteredSuppliers = allSuppliers.filter(
     s => selectedCategory === 'Todos' || s.category === selectedCategory
   );
+
+  const handleRegisterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!acceptedLegalNotice) {
+      alert('Debe aceptar la declaración jurada de cumplimiento del Decreto Supremo Nº 28761.');
+      return;
+    }
+
+    const newSupplier: Supplier = {
+      id: `supp-custom-${Date.now()}`,
+      name,
+      category,
+      department,
+      city,
+      address,
+      productDescription,
+      minOrder,
+      priceRange,
+      phone,
+      nitOrRegistry,
+      isLegalAndCompliant: true,
+      verificationSource: 'Declaración Jurada Formal (En proceso de auditoría SEPREC)',
+      verifiedDate: new Date().toISOString().split('T')[0]
+    };
+
+    setCustomSuppliers(prev => [newSupplier, ...prev]);
+    setFormSuccess(true);
+    setTimeout(() => {
+      setFormSuccess(false);
+      setShowRegisterModal(false);
+      setName('');
+      setAddress('');
+      setProductDescription('');
+    }, 2000);
+  };
 
   return (
     <div className="space-y-6">
       
       {/* Encabezado */}
-      <div>
-        <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-          Directorio Comercial de Proveedores Formales y Precios Mayoristas
-        </h2>
-        <p className="text-sm text-slate-400 mt-1">
-          Proveedores verificados con registro comercial en Bolivia para comercio lícito y formal.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+            Directorio Comercial de Proveedores Formales y Precios Mayoristas
+          </h2>
+          <p className="text-sm text-slate-400 mt-1">
+            Proveedores verificados con registro comercial en Bolivia para comercio lícito y formal.
+          </p>
+        </div>
+
+        <button
+          onClick={() => setShowRegisterModal(true)}
+          className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-md self-start sm:self-auto"
+        >
+          <PlusCircle className="w-4 h-4" />
+          <span>Registrar mi Empresa Formal</span>
+        </button>
       </div>
 
       {/* Banner de Cumplimiento Normativo (Decreto Supremo Nº 28761) */}
@@ -129,6 +197,197 @@ export const SupplierDirectory: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {/* Modal de Registro de Proveedor Formal */}
+      {showRegisterModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+            
+            <div className="p-5 border-b border-slate-800 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Building2 className="w-5 h-5 text-emerald-400" />
+                <h3 className="text-base font-bold text-white">Solicitud de Registro de Proveedor Formal</h3>
+              </div>
+              <button
+                onClick={() => setShowRegisterModal(false)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleRegisterSubmit} className="p-6 overflow-y-auto space-y-4 text-xs">
+              
+              {formSuccess && (
+                <div className="p-3 bg-emerald-950/60 border border-emerald-800 text-emerald-300 rounded-xl flex items-center gap-2">
+                  <Check className="w-4 h-4 shrink-0" />
+                  <span>Registro recibido exitosamente. Se ha incorporado a su sesión para verificación.</span>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-slate-400 mb-1">Razón Social o Nombre Comercial</label>
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Ej. Confecciones Illimani S.R.L."
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 mb-1">NIT / Matrícula SEPREC</label>
+                  <input
+                    type="text"
+                    required
+                    value={nitOrRegistry}
+                    onChange={(e) => setNitOrRegistry(e.target.value)}
+                    placeholder="NIT 1029384019"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 mb-1">Rubro / Categoría</label>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value as any)}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white"
+                  >
+                    <option value="Textiles e Indumentaria Nueva">Textiles e Indumentaria Nueva</option>
+                    <option value="Calzado y Cuero Nacional">Calzado y Cuero Nacional</option>
+                    <option value="Artesanía y Confección">Artesanía y Confección</option>
+                    <option value="Ferretería y Herramientas">Ferretería y Herramientas</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 mb-1">Departamento</label>
+                  <select
+                    value={department}
+                    onChange={(e) => setDepartment(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white"
+                  >
+                    {['La Paz', 'Santa Cruz', 'Cochabamba', 'Oruro', 'Potosí', 'Tarija', 'Chuquisaca', 'Beni', 'Pando'].map(d => (
+                      <option key={d} value={d}>{d}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-slate-400 mb-1">Dirección Física de Venta o Taller</label>
+                <input
+                  type="text"
+                  required
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Calle, Número, Zona o Parque Industrial"
+                  className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-400 mb-1">Descripción de Productos Mayoristas</label>
+                <textarea
+                  required
+                  rows={3}
+                  value={productDescription}
+                  onChange={(e) => setProductDescription(e.target.value)}
+                  placeholder="Detalle tipo de prendas, tejidos, telas o manufactura..."
+                  className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-slate-400 mb-1">Pedido Mínimo Mayorista</label>
+                  <input
+                    type="text"
+                    required
+                    value={minOrder}
+                    onChange={(e) => setMinOrder(e.target.value)}
+                    placeholder="Ej. 12 unidades / 1 docena"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-400 mb-1">Rango Estimado de Precios</label>
+                  <input
+                    type="text"
+                    required
+                    value={priceRange}
+                    onChange={(e) => setPriceRange(e.target.value)}
+                    placeholder="Ej. Bs 40 - Bs 85"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-slate-400 mb-1">Teléfono o WhatsApp Comercial</label>
+                  <input
+                    type="text"
+                    required
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-400 mb-1">Ciudad o Municipio</label>
+                  <input
+                    type="text"
+                    required
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    placeholder="Ej. El Alto / Montero / Quillacollo"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white"
+                  />
+                </div>
+              </div>
+
+              {/* Declaración Jurada Obligatoria */}
+              <div className="p-4 bg-slate-950 rounded-xl border border-amber-900/60 space-y-2">
+                <label className="flex items-start gap-2.5 cursor-pointer text-slate-300">
+                  <input
+                    type="checkbox"
+                    required
+                    checked={acceptedLegalNotice}
+                    onChange={(e) => setAcceptedLegalNotice(e.target.checked)}
+                    className="mt-0.5 accent-emerald-500 rounded"
+                  />
+                  <span>
+                    <strong className="text-amber-300">Declaración Jurada Normativa:</strong> Declaro formalmente que todos los artículos ofrecidos son <strong className="text-white">nuevos, de confección lícita</strong> y que mi empresa <strong className="text-rose-400">NO comercializa prendería usada</strong>, en estricto cumplimiento del Decreto Supremo Nº 28761 y la Ley Nº 1990 de Aduanas.
+                  </span>
+                </label>
+              </div>
+
+              <div className="pt-2 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowRegisterModal(false)}
+                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition-colors"
+                >
+                  Enviar Registro
+                </button>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      )}
 
     </div>
   );
