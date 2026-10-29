@@ -52,44 +52,34 @@ $$\text{Punto de Equilibrio (unidades)} = \frac{\text{Costos Fijos Totales}}{\te
 - **Fecha de ejecución:** 2026-10-29
 - **Comando:** `npm test` (`vitest run`)
 - **Herramienta:** Vitest v2.1.9 en Node.js v24.21.0
-- **Total de pruebas ejecutadas:** 16
-- **Pruebas superadas:** 16 (100%)
+- **Total de pruebas ejecutadas:** 22
+- **Pruebas superadas:** 22 (100%)
 - **Pruebas fallidas:** 0
-- **Tiempo de ejecución de tests:** 34 ms
+- **Tiempo de ejecución de tests:** 40 ms
 
 #### Detalle de Suites Validadas:
-1. `roundCurrency & formatCurrency`:
-   - Redondeo seguro ante errores de punto flotante IEEE 754 (0.1 + 0.2 = 0.3).
+1. `financialMath.test.ts` (16 pruebas):
+   - Redondeo seguro ante errores de punto flotante IEEE 754.
    - Manejo seguro de `NaN` e `Infinity`.
-   - Formateo con símbolo `Bs` y separadores decimales estándar bolivianos (`1.234,56`).
-2. `convertAmount` (Conversor de Divisas):
-   - BOB a USD dividiendo entre `sellRate` oficial (1.212 Bs -> 100 USD).
-   - USD a BOB multiplicando por `buyRate` oficial (50 USD -> 600 Bs).
-   - Misma moneda (BOB a BOB) con tasa 1.0.
-   - Triangulación documentada entre monedas extranjeras (EUR a USD con BOB pivote).
-   - Control de cantidades nulas o negativas.
-3. `calculateImportCost` (Costos Comerciales y de Importación):
-   - Costo total de adquisición con flete, embalaje, aduana y comisiones.
-   - Cálculo exacto de costo unitario por producto.
-   - Desglose porcentual de incidencia de costos.
-   - Control de divisiones por cero en lotes vacíos.
-4. `calculateMarginAndMarkup` (Margen Bruto vs. Recargo):
-   - Caso base 100 Bs costo / 150 Bs venta -> 50 Bs ganancia, 33.33% margen bruto y 50.00% markup.
-   - Cálculo inverso de precio a partir de margen objetivo.
-   - Cálculo inverso de precio a partir de recargo objetivo.
-   - Prevención de márgenes matemáticamente imposibles (>= 100%).
-5. `calculateBreakEven` (Punto de Equilibrio):
-   - Caso viable: Costos fijos 10.000 Bs, Precio 50 Bs, Costo variable 30 Bs -> 500 unidades y 25.000 Bs.
-   - Caso inviable: Precio inferior a costo variable con emisión de alerta pedagógica.
+   - Formateo con símbolo `Bs` y separadores decimales estándar bolivianos.
+   - Conversiones BOB-USD, USD-BOB y triangulaciones con pivote BOB.
+   - Costo total de adquisición con fletes y desglose porcentual.
+   - Margen Bruto vs. Recargo (Markup) con cálculo de precio inverso.
+   - Punto de Equilibrio viable e inviable con emisión de alertas.
+2. `customsAndCommunity.test.ts` (6 pruebas):
+   - Estimación de Gravamen Arancelario (0% bienes de capital, 20% textiles nuevos).
+   - Cálculo del IVA importación con alícuota efectiva del 14.94% sobre CIF + GA.
+   - Bloqueo estricto e inmediato de importación de ropa usada según Decreto Supremo Nº 28761.
+   - Validación de entradas ciudadanas, coherencia de precios de compra/venta y límites anti-spam.
 
 ---
 
 ### 2.2 Verificación de Compilación y Tipado Estático
 - **Comando:** `npm run build` (`tsc -b && vite build`)
 - **Resultado:** Exitoso (código de salida 0).
-- **Módulos transformados:** 1.599 módulos.
+- **Módulos transformados:** 1.607 módulos.
 - **Artefactos generados en `dist/`:**
   - `dist/index.html`: 1.42 kB (0.81 kB gzip)
-  - `dist/assets/index-*.css`: 25.28 kB (5.27 kB gzip)
-  - `dist/assets/index-*.js`: 394.80 kB (114.23 kB gzip)
+  - `dist/assets/index-*.css`: 29.59 kB (5.84 kB gzip)
+  - `dist/assets/index-*.js`: 442.83 kB (124.79 kB gzip con Leaflet y motor gráfico)
 - **Advertencias críticas:** 0. Todos los tipos de datos TypeScript resueltos con verificación estricta.

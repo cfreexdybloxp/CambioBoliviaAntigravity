@@ -123,3 +123,20 @@ export interface EducationalGuide {
   content: string; // Markdown or structured text
   keyTakeaways: string[];
 }
+
+export type ReportStatus = 'PENDIENTE_REVISION' | 'VERIFICADO_PUBLICADO' | 'RECHAZADO';
+
+export interface CommunityRateReport {
+  id: string;
+  establishmentName: string;
+  city: string;
+  currency: CurrencyCode;
+  buyRate: number;
+  sellRate: number;
+  declaredSource: 'Ventanilla física / Pizarra' | 'Comprobante de compra' | 'Sitio web oficial' | 'Consulta telefónica';
+  reportedAt: string;
+  status: ReportStatus;
+  rejectionReason?: string;
+  notes?: string;
+}
+

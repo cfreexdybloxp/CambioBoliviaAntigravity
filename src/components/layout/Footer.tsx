@@ -1,9 +1,13 @@
 import React from 'react';
 import { Shield, ExternalLink, Scale } from 'lucide-react';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onOpenLegalModal?: (section: 'terms' | 'privacy' | 'methodology' | 'normative') => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onOpenLegalModal }) => {
   return (
-    <footer className="bg-slate-900 border-t border-slate-800 text-slate-400 text-sm mt-16">
+    <footer className="bg-slate-900 border-t border-slate-800 text-slate-400 text-sm mt-16 print:hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           
@@ -21,7 +25,7 @@ export const Footer: React.FC = () => {
               Plataforma independiente dedicada a la transparencia cambiaria, formalización del comercio y educación financiera en Bolivia.
             </p>
             <div className="pt-2 text-xs text-slate-500">
-              Desarrollada bajo la directriz de costo cero (0 Bs) y máxima precisión matemática.
+              Operación comprobada bajo la directriz de costo cero (0 Bs) y máxima precisión matemática.
             </div>
           </div>
 
@@ -85,17 +89,47 @@ export const Footer: React.FC = () => {
             <p className="text-xs text-slate-400 leading-relaxed">
               En estricto cumplimiento del <strong className="text-slate-200">Decreto Supremo Nº 28761</strong> y la <strong className="text-slate-200">Ley Nº 1990</strong>, este portal promueve el comercio legal y no incluye ni asesora sobre internación de prendería usada (mercancía prohibida).
             </p>
+            {onOpenLegalModal && (
+              <button
+                onClick={() => onOpenLegalModal('normative')}
+                className="text-xs text-amber-400 hover:underline block pt-1"
+              >
+                Ver detalles normativos ↗
+              </button>
+            )}
           </div>
 
           {/* Columna 4: Descargo de Responsabilidad */}
           <div className="space-y-3">
             <h4 className="text-white text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
               <Shield className="w-3.5 h-3.5 text-emerald-400" />
-              Descargo Informativo
+              Transparencia y Privacidad
             </h4>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Las cotizaciones y cálculos son de carácter orientativo e informativo. Los precios finales en ventanilla pueden variar según la entidad financiera. Verifique siempre los valores antes de concretar operaciones comerciales.
+              Las cotizaciones y cálculos son de carácter orientativo. Todos los cálculos se realizan localmente en su navegador sin rastreo invasivo.
             </p>
+            {onOpenLegalModal && (
+              <div className="flex flex-col gap-1 text-xs pt-1">
+                <button
+                  onClick={() => onOpenLegalModal('methodology')}
+                  className="text-left text-emerald-400 hover:underline"
+                >
+                  Metodología de datos cambiarios ↗
+                </button>
+                <button
+                  onClick={() => onOpenLegalModal('privacy')}
+                  className="text-left text-emerald-400 hover:underline"
+                >
+                  Política de privacidad (0 rastreo) ↗
+                </button>
+                <button
+                  onClick={() => onOpenLegalModal('terms')}
+                  className="text-left text-emerald-400 hover:underline"
+                >
+                  Términos y condiciones ↗
+                </button>
+              </div>
+            )}
           </div>
 
         </div>

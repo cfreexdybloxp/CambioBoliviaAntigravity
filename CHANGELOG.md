@@ -6,6 +6,31 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/
 
 ---
 
+## [0.2.0] — 2026-10-29
+
+### Añadido
+- **Módulo Tributario y Arancelario Aduanero ([CustomsTariffCalculator](file:///c:/webCambioaora/src/components/calculators/CustomsTariffCalculator.tsx)):**
+  - Estimación formal de Gravamen Arancelario (GA) de 0% a 40% según partidas de la Ley General de Aduanas (Ley Nº 1990).
+  - Cálculo automático del IVA importación efectivo (14.94% sobre CIF + GA) y explicación de compensación de Crédito Fiscal en el Formulario 200 del SIN.
+  - Bloqueo preventivo de cálculo para ropa usada con citación del Decreto Supremo Nº 28761.
+- **Generador de Proforma Comercial y Exportación a PDF/Impresión ([CommercialProformaSheet](file:///c:/webCambioaora/src/components/calculators/CommercialProformaSheet.tsx)):**
+  - Generación de hojas de liquidación y proformas formales optimizadas para impresión en papel A4 (`@media print`) o exportación directa a PDF.
+- **Gráfico de Evolución de Cotizaciones ([HistoricalRatesChart](file:///c:/webCambioaora/src/components/currency/HistoricalRatesChart.tsx)):**
+  - Componente vectorial SVG puro y responsivo sin librerías pesadas para comparar la serie oficial del BCB frente al promedio comercial.
+- **Tabla Comparativa y Spread Cambiario ([RateComparisonTable](file:///c:/webCambioaora/src/components/currency/RateComparisonTable.tsx)):**
+  - Matriz comparativa entre casas de cambio supervisadas por ASFI, con cálculo de diferencial (*spread*) y discrepancia numérica frente a la tasa oficial.
+- **Sub-sistema de Reportes Comunitarios y Moderación ([CommunityRatesPanel](file:///c:/webCambioaora/src/components/currency/CommunityRatesPanel.tsx)):**
+  - Formulario ciudadano con limitación de frecuencia anti-spam y prevención de duplicados en `localStorage`.
+  - Panel administrativo de moderación local con estados: `PENDIENTE_REVISION`, `VERIFICADO_PUBLICADO` y `RECHAZADO`.
+- **Modal de Transparencia, Metodología y Privacidad ([LegalDisclaimerModal](file:///c:/webCambioaora/src/components/common/LegalDisclaimerModal.tsx)):**
+  - Secciones accesibles desde el pie de página para auditar metodología, política de cero rastreo de datos y compromiso normativo.
+- **Optimización para Crecimiento y SEO:**
+  - Archivos `public/robots.txt` y `public/sitemap.xml` añadidos.
+- **Expansión de la Suite de Pruebas:**
+  - 6 nuevas pruebas automatizadas para aduana y validación ciudadana (total: 22 pruebas superadas al 100%).
+
+---
+
 ## [0.1.0] — 2026-10-29
 
 ### Añadido
