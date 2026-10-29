@@ -15,11 +15,11 @@
 | **Fase 1: Memoria Operativa** | ✅ COMPLETADO | Verificado | 11 documentos de arquitectura y control generados. |
 | **Fase 2: Arquitectura de Código (Vite+React+Tailwind)** | ✅ COMPLETADO | Verificado | Scaffold frontend, Tailwind, TypeScript estricto, build 0 errores. |
 | **Fase 3: Módulo de Divisas y Conversor** | ✅ COMPLETADO | Verificado | Conversor bidireccional, cálculo de antigüedad y trazabilidad BCB. |
-| **Fase 4: Calculadoras Comerciales** | ✅ COMPLETADO | Verificado | Costo total/unitario, margen vs markup, punto de equilibrio, aranceles aduana, comparador y proforma PDF. |
+| **Fase 4: Calculadoras Comerciales** | ✅ COMPLETADO | Verificado | Costo total/unitario, margen vs markup, punto de equilibrio, aranceles aduana, indexación UFV, comparador y proforma PDF. |
 | **Fase 5: Casas de Cambio y Mapa (OSM)** | ✅ COMPLETADO | Verificado | Leaflet + OpenStreetMap sin costo de API y directorio ASFI curado. |
 | **Fase 6: Proveedores y Cumplimiento Normativo** | ✅ COMPLETADO | Verificado | Directorio legal y cumplimiento estricto del DS 28761. |
 | **Fase 7: Guías y Educación Financiera** | ✅ COMPLETADO | Verificado | Guías pedagógicas y glosario financiero boliviano. |
-| **Fase 8: Suite de Pruebas Automatizadas** | ✅ COMPLETADO | Verificado | 22/22 tests pasando en Vitest (40 ms). Build de producción completado. |
+| **Fase 8: Suite de Pruebas Automatizadas** | ✅ COMPLETADO | Verificado | 26/26 tests pasando en Vitest (50 ms). Build de producción completado. |
 | **Fase 9: Manual y Preparación de Publicación** | ✅ COMPLETADO | Verificado | `MANUAL_DEL_PROPIETARIO.md` redactado con sitemap, robots.txt y guía 0 Bs. |
 
 ---

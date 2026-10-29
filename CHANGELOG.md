@@ -6,6 +6,22 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/
 
 ---
 
+## [0.3.0] — 2026-10-29
+
+### Añadido
+- **Calculadora de Indexación a la UFV y Poder Adquisitivo ([UfvIndexationCalculator](file:///c:/webCambioaora/src/components/calculators/UfvIndexationCalculator.tsx)):**
+  - Actualización formal de montos en Bolivianos por la Unidad de Fomento de Vivienda del Banco Central de Bolivia (Decreto Supremo Nº 26390).
+  - Serie histórica anual desde 2001 hasta 2026 y cálculo de pérdida relativa de poder adquisitivo.
+- **Exportador de Datos Abiertos ([OpenDataExporter](file:///c:/webCambioaora/src/components/common/OpenDataExporter.tsx)):**
+  - Descarga instantánea de cotizaciones oficiales en CSV y JSON.
+  - Descarga del directorio de casas de cambio supervisadas por ASFI en formato CSV para investigadores y pymes.
+- **Soporte PWA (Progressive Web App):**
+  - Configuración de `public/manifest.json` y metadatos en `index.html` para acceso e instalación offline en dispositivos móviles y de escritorio.
+- **Suite de Pruebas Ampliada:**
+  - 4 pruebas automatizadas adicionales en `ufvMath.test.ts` (total: 26 pruebas pasando al 100%).
+
+---
+
 ## [0.2.0] — 2026-10-29
 
 ### Añadido

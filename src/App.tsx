@@ -11,8 +11,10 @@ import { CommercialCostCalculator } from './components/calculators/CommercialCos
 import { ProfitMarginCalculator } from './components/calculators/ProfitMarginCalculator';
 import { BreakEvenCalculator } from './components/calculators/BreakEvenCalculator';
 import { CustomsTariffCalculator } from './components/calculators/CustomsTariffCalculator';
+import { UfvIndexationCalculator } from './components/calculators/UfvIndexationCalculator';
 import { SupplierCostComparator } from './components/calculators/SupplierCostComparator';
 import { CommercialProformaSheet } from './components/calculators/CommercialProformaSheet';
+import { OpenDataExporter } from './components/common/OpenDataExporter';
 import { ExchangeHouseDirectory } from './components/exchangeHouses/ExchangeHouseDirectory';
 import { SupplierDirectory } from './components/suppliers/SupplierDirectory';
 import { EducationalGuides } from './components/guides/EducationalGuides';
@@ -29,7 +31,7 @@ import {
 
 export function App() {
   const [activeTab, setActiveTab] = useState<TabType>('divisas');
-  const [activeCalculator, setActiveCalculator] = useState<'cost' | 'margin' | 'breakeven' | 'customs' | 'compare' | 'proforma'>('cost');
+  const [activeCalculator, setActiveCalculator] = useState<'cost' | 'margin' | 'breakeven' | 'customs' | 'ufv' | 'compare' | 'proforma'>('cost');
   const [transferredUnitCost, setTransferredUnitCost] = useState<number | undefined>(undefined);
   const [legalModal, setLegalModal] = useState<{
     isOpen: boolean;
@@ -92,6 +94,9 @@ export function App() {
 
             {/* Panel de Reportes Colaborativos de la Comunidad */}
             <CommunityRatesPanel />
+
+            {/* Exportación de Datos Abiertos */}
+            <OpenDataExporter />
 
           </div>
         )}
@@ -161,6 +166,18 @@ export function App() {
               </button>
 
               <button
+                onClick={() => setActiveCalculator('ufv')}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeCalculator === 'ufv'
+                    ? 'bg-emerald-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                <TrendingUp className="w-4 h-4" />
+                Indexación UFV (BCB)
+              </button>
+
+              <button
                 onClick={() => setActiveCalculator('compare')}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                   activeCalculator === 'compare'
@@ -198,6 +215,9 @@ export function App() {
               )}
               {activeCalculator === 'customs' && (
                 <CustomsTariffCalculator />
+              )}
+              {activeCalculator === 'ufv' && (
+                <UfvIndexationCalculator />
               )}
               {activeCalculator === 'compare' && (
                 <SupplierCostComparator />

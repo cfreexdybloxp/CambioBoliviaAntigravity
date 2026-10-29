@@ -52,10 +52,10 @@ $$\text{Punto de Equilibrio (unidades)} = \frac{\text{Costos Fijos Totales}}{\te
 - **Fecha de ejecución:** 2026-10-29
 - **Comando:** `npm test` (`vitest run`)
 - **Herramienta:** Vitest v2.1.9 en Node.js v24.21.0
-- **Total de pruebas ejecutadas:** 22
-- **Pruebas superadas:** 22 (100%)
+- **Total de pruebas ejecutadas:** 26
+- **Pruebas superadas:** 26 (100%)
 - **Pruebas fallidas:** 0
-- **Tiempo de ejecución de tests:** 40 ms
+- **Tiempo de ejecución de tests:** 50 ms
 
 #### Detalle de Suites Validadas:
 1. `financialMath.test.ts` (16 pruebas):
@@ -71,15 +71,19 @@ $$\text{Punto de Equilibrio (unidades)} = \frac{\text{Costos Fijos Totales}}{\te
    - Cálculo del IVA importación con alícuota efectiva del 14.94% sobre CIF + GA.
    - Bloqueo estricto e inmediato de importación de ropa usada según Decreto Supremo Nº 28761.
    - Validación de entradas ciudadanas, coherencia de precios de compra/venta y límites anti-spam.
+3. `ufvMath.test.ts` (4 pruebas):
+   - Indexación histórica por UFV (Decreto Supremo Nº 26390) desde el año 2001 (UFV 1.0) y 2015.
+   - Cálculo del poder adquisitivo equivalente y variación porcentual acumulada.
+   - Manejo robusto de montos en cero sin fallos aritméticos.
 
 ---
 
 ### 2.2 Verificación de Compilación y Tipado Estático
 - **Comando:** `npm run build` (`tsc -b && vite build`)
 - **Resultado:** Exitoso (código de salida 0).
-- **Módulos transformados:** 1.607 módulos.
+- **Módulos transformados:** 1.611 módulos.
 - **Artefactos generados en `dist/`:**
-  - `dist/index.html`: 1.42 kB (0.81 kB gzip)
+  - `dist/index.html`: 1.52 kB (0.85 kB gzip)
   - `dist/assets/index-*.css`: 29.59 kB (5.84 kB gzip)
-  - `dist/assets/index-*.js`: 442.83 kB (124.79 kB gzip con Leaflet y motor gráfico)
+  - `dist/assets/index-*.js`: 453.87 kB (127.17 kB gzip con Leaflet, motor gráfico y exportador)
 - **Advertencias críticas:** 0. Todos los tipos de datos TypeScript resueltos con verificación estricta.
