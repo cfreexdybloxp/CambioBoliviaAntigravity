@@ -4,8 +4,32 @@
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100 font-sans antialiased;
+    @apply bg-slate-50 text-slate-900 font-sans antialiased transition-colors duration-300;
   }
+  .dark body {
+    @apply bg-slate-950 text-slate-100;
+  }
+}
+
+/* Scrollbar personalizada (modo oscuro/claro) */
+:root {
+  scrollbar-width: thin;
+  scrollbar-color: #334155 #0f172a;
+}
+.dark ::-webkit-scrollbar { width: 6px; }
+.dark ::-webkit-scrollbar-track { background: #0f172a; }
+.dark ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+:root:not(.dark) ::-webkit-scrollbar { width: 6px; }
+:root:not(.dark) ::-webkit-scrollbar-track { background: #f1f5f9; }
+:root:not(.dark) ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+/* Animación de entrada de pestañas */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeInUp 0.28s ease-out both;
 }
 
 /* Custom leaflet map adjustments */
@@ -16,14 +40,26 @@
   z-index: 10;
 }
 
-.leaflet-popup-content-wrapper {
+/* Custom Leaflet map — modo oscuro */
+.dark .leaflet-popup-content-wrapper {
   background-color: #0f172a !important;
   color: #f1f5f9 !important;
   border: 1px solid #334155 !important;
   border-radius: 0.5rem !important;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
 }
-
-.leaflet-popup-tip {
+.dark .leaflet-popup-tip {
   background-color: #0f172a !important;
+}
+
+/* Custom Leaflet map — modo claro */
+.leaflet-popup-content-wrapper {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15) !important;
+}
+.leaflet-popup-tip {
+  background-color: #ffffff !important;
 }

@@ -59,15 +59,15 @@ export const CurrencyConverter: React.FC = () => {
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl max-w-4xl mx-auto">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl shadow-slate-200/50 dark:shadow-none max-w-4xl mx-auto transition-colors duration-200">
       
       {/* Encabezado del Conversor */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
             Conversor de Divisas Oficial y Comercial
           </h2>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Cálculos transparentes con cotizaciones del Banco Central de Bolivia y entidades reguladas.
           </p>
         </div>
@@ -84,7 +84,7 @@ export const CurrencyConverter: React.FC = () => {
         
         {/* Cantidad y De */}
         <div className="lg:col-span-3 space-y-2">
-          <label className="block text-xs font-medium text-slate-400 uppercase tracking-wider">
+          <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
             Monto a Convertir
           </label>
           <div className="relative">
@@ -94,7 +94,7 @@ export const CurrencyConverter: React.FC = () => {
               step="any"
               value={isNaN(amount) ? '' : amount}
               onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-lg font-semibold text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-lg font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
               placeholder="0.00"
             />
           </div>
@@ -102,7 +102,7 @@ export const CurrencyConverter: React.FC = () => {
           <select
             value={fromCurrency}
             onChange={(e) => setFromCurrency(e.target.value as CurrencyCode)}
-            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
             {currencies.map((c) => (
               <option key={c.code} value={c.code}>
@@ -116,7 +116,7 @@ export const CurrencyConverter: React.FC = () => {
         <div className="lg:col-span-1 flex justify-center py-2 lg:py-0">
           <button
             onClick={handleSwap}
-            className="p-3 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white border border-slate-700 transition-all shadow-md group"
+            className="p-3 rounded-full bg-slate-100 hover:bg-emerald-600 dark:bg-slate-800 dark:hover:bg-emerald-600 text-slate-700 hover:text-white dark:text-slate-300 dark:hover:text-white border border-slate-300 dark:border-slate-700 transition-all shadow-md group"
             title="Invertir monedas"
             aria-label="Invertir monedas"
           >
@@ -126,26 +126,26 @@ export const CurrencyConverter: React.FC = () => {
 
         {/* Moneda de Destino y Resultado */}
         <div className="lg:col-span-3 space-y-2">
-          <label className="block text-xs font-medium text-slate-400 uppercase tracking-wider">
+          <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
             Moneda Recibida
           </label>
-          <div className="bg-slate-950/80 border border-emerald-900/50 rounded-xl px-4 py-3 flex items-center justify-between">
-            <span className="text-xl sm:text-2xl font-bold text-emerald-400 tracking-tight">
+          <div className="bg-emerald-50/60 dark:bg-slate-950/80 border border-emerald-300 dark:border-emerald-900/50 rounded-xl px-4 py-3 flex items-center justify-between">
+            <span className="text-xl sm:text-2xl font-bold text-emerald-700 dark:text-emerald-400 tracking-tight">
               {formatCurrency(conversionResult.result, toCurrency)}
             </span>
             <button
               onClick={handleCopy}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
               title="Copiar resultado"
             >
-              {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+              {copied ? <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-4 h-4" />}
             </button>
           </div>
 
           <select
             value={toCurrency}
             onChange={(e) => setToCurrency(e.target.value as CurrencyCode)}
-            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
             {currencies.map((c) => (
               <option key={c.code} value={c.code}>
@@ -159,15 +159,15 @@ export const CurrencyConverter: React.FC = () => {
 
       {/* Botones de Montos Rápidos */}
       <div className="flex flex-wrap items-center gap-2 pt-2 pb-4">
-        <span className="text-xs text-slate-500 mr-2">Montos rápidos:</span>
+        <span className="text-xs text-slate-400 dark:text-slate-500 mr-2">Montos rápidos:</span>
         {[10, 50, 100, 500, 1000].map((val) => (
           <button
             key={val}
             onClick={() => setAmount(val)}
             className={`text-xs px-2.5 py-1 rounded-md border transition-colors ${
               amount === val
-                ? 'bg-emerald-600 text-white border-emerald-500'
-                : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+                ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm'
+                : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
             }`}
           >
             {val} {fromCurrency}
@@ -176,27 +176,27 @@ export const CurrencyConverter: React.FC = () => {
       </div>
 
       {/* Desglose del Cálculo y Trazabilidad de la Tasa */}
-      <div className="bg-slate-950/60 rounded-xl p-4 border border-slate-800/80 text-xs space-y-2">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-slate-400">
+      <div className="bg-slate-50 dark:bg-slate-950/60 rounded-xl p-4 border border-slate-200 dark:border-slate-800/80 text-xs space-y-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-slate-600 dark:text-slate-400">
           <div className="flex items-center gap-2">
-            <Info className="w-4 h-4 text-emerald-400 shrink-0" />
+            <Info className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <span><strong>Fórmula aplicada:</strong> {conversionResult.calculationExplanation}</span>
           </div>
           <span className="text-slate-500">
-            Tasa efectiva: <strong>1 {fromCurrency} = {roundCurrency(conversionResult.rateApplied, 4)} {toCurrency === 'BOB' ? 'Bs' : toCurrency}</strong>
+            Tasa efectiva: <strong className="text-slate-800 dark:text-slate-200">1 {fromCurrency} = {roundCurrency(conversionResult.rateApplied, 4)} {toCurrency === 'BOB' ? 'Bs' : toCurrency}</strong>
           </span>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-slate-800/50 text-slate-500">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-slate-200 dark:border-slate-800/50 text-slate-500">
           <div className="flex items-center gap-1.5">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Fuente: <strong className="text-slate-300">{activeRateMeta.sourceName}</strong></span>
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+            <span>Fuente: <strong className="text-slate-700 dark:text-slate-300">{activeRateMeta.sourceName}</strong></span>
           </div>
           <a
             href={activeRateMeta.sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-emerald-400 hover:underline"
+            className="text-emerald-600 dark:text-emerald-400 hover:underline font-medium"
           >
             Comprobar fuente oficial ↗
           </a>

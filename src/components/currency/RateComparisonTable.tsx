@@ -51,22 +51,22 @@ export const RateComparisonTable: React.FC = () => {
   }).filter(r => r.sell !== undefined);
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl space-y-6">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-6 transition-colors duration-200">
       
       {/* Encabezado */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-            <ArrowUpDown className="w-5 h-5 text-emerald-400" />
+          <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+            <ArrowUpDown className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             Tabla Comparativa de Cotizaciones por Establecimiento
           </h3>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Contraste el diferencial (*spread*) y las pizarras comerciales frente al Tipo de Cambio Oficial del BCB.
           </p>
         </div>
 
         {/* Selector de Moneda */}
-        <div className="flex items-center gap-1.5 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
+        <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-950 p-1.5 rounded-xl border border-slate-200 dark:border-slate-800">
           {(['USD', 'EUR', 'PEN', 'ARS', 'BRL'] as CurrencyCode[]).map((c) => (
             <button
               key={c}
@@ -74,7 +74,7 @@ export const RateComparisonTable: React.FC = () => {
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
                 selectedCurrency === c
                   ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-white'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/70 dark:hover:bg-slate-800'
               }`}
             >
               {c}
@@ -85,16 +85,16 @@ export const RateComparisonTable: React.FC = () => {
 
       {/* Referencia Oficial Destacada */}
       {officialRate && (
-        <div className="bg-emerald-950/30 border border-emerald-800/60 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
           <div>
-            <span className="font-bold text-emerald-400 uppercase text-[10px] tracking-wider block">
+            <span className="font-bold text-emerald-700 dark:text-emerald-400 uppercase text-[10px] tracking-wider block">
               Tipo de Cambio Oficial (BCB) de Referencia
             </span>
-            <span className="text-white font-semibold text-sm">
+            <span className="text-slate-900 dark:text-white font-semibold text-sm">
               Compra: Bs {officialRate.buyRate.toFixed(2)} | Venta: Bs {officialRate.sellRate.toFixed(2)}
             </span>
           </div>
-          <span className="text-slate-400">
+          <span className="text-slate-600 dark:text-slate-400">
             Fijado por el Banco Central de Bolivia para operaciones formales y tributarias.
           </span>
         </div>
@@ -104,7 +104,7 @@ export const RateComparisonTable: React.FC = () => {
       <div className="overflow-x-auto">
         <table className="w-full text-xs text-left border-collapse">
           <thead>
-            <tr className="border-b border-slate-800 text-slate-400 uppercase font-semibold">
+            <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 uppercase font-semibold">
               <th className="py-3 px-3">Casa de Cambio (ASFI)</th>
               <th className="py-3 px-3">Ubicación</th>
               <th className="py-3 px-3 text-right">Compra (Bs)</th>
@@ -113,24 +113,24 @@ export const RateComparisonTable: React.FC = () => {
               <th className="py-3 px-3 text-right">Dif. vs BCB Oficial</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/60 text-slate-300">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-slate-700 dark:text-slate-300">
             {rows.map((row) => (
-              <tr key={row.id} className="hover:bg-slate-850/50 transition-colors">
+              <tr key={row.id} className="hover:bg-slate-50 dark:hover:bg-slate-850/50 transition-colors">
                 <td className="py-3.5 px-3">
-                  <div className="font-bold text-white text-sm">{row.name}</div>
-                  <span className="text-[10px] text-slate-500">Licencia: {row.asfiLicense}</span>
+                  <div className="font-bold text-slate-900 dark:text-white text-sm">{row.name}</div>
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500">Licencia: {row.asfiLicense}</span>
                 </td>
-                <td className="py-3.5 px-3 text-slate-400">{row.city}</td>
-                <td className="py-3.5 px-3 text-right font-medium text-slate-200">
+                <td className="py-3.5 px-3 text-slate-500 dark:text-slate-400">{row.city}</td>
+                <td className="py-3.5 px-3 text-right font-medium text-slate-800 dark:text-slate-200">
                   {row.buy ? `Bs ${row.buy.toFixed(2)}` : '-'}
                 </td>
-                <td className="py-3.5 px-3 text-right font-bold text-emerald-400 text-sm">
+                <td className="py-3.5 px-3 text-right font-bold text-emerald-600 dark:text-emerald-400 text-sm">
                   {row.sell ? `Bs ${row.sell.toFixed(2)}` : '-'}
                 </td>
-                <td className="py-3.5 px-3 text-right font-medium text-slate-400">
+                <td className="py-3.5 px-3 text-right font-medium text-slate-500 dark:text-slate-400">
                   Bs {row.spread}
                 </td>
-                <td className="py-3.5 px-3 text-right font-medium text-amber-400">
+                <td className="py-3.5 px-3 text-right font-medium text-amber-600 dark:text-amber-400">
                   {row.diffFromOfficial !== '-' ? `+Bs ${row.diffFromOfficial}` : '-'}
                 </td>
               </tr>
@@ -140,10 +140,10 @@ export const RateComparisonTable: React.FC = () => {
       </div>
 
       {/* Descargo Normativo (Regla 23 de Instrucción Maestra) */}
-      <div className="p-4 bg-slate-950/70 rounded-xl border border-slate-800 text-xs text-slate-400 flex items-start gap-2.5">
-        <Info className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+      <div className="p-4 bg-slate-50 dark:bg-slate-950/70 rounded-xl border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 flex items-start gap-2.5">
+        <Info className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
         <p className="leading-relaxed">
-          <strong className="text-slate-200">Aviso sobre comparaciones:</strong> Las diferencias numéricas reflejan precios de ventanilla registrados en establecimientos autorizados. No constituyen garantías de ahorro ni compromisos comerciales obligatorios para las entidades. Las cotizaciones pueden variar según la disponibilidad de efectivo físico en caja.
+          <strong className="text-slate-800 dark:text-slate-200">Aviso sobre comparaciones:</strong> Las diferencias numéricas reflejan precios de ventanilla registrados en establecimientos autorizados. No constituyen garantías de ahorro ni compromisos comerciales obligatorios para las entidades. Las cotizaciones pueden variar según la disponibilidad de efectivo físico en caja.
         </p>
       </div>
 
