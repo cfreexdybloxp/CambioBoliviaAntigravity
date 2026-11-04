@@ -4,11 +4,35 @@ import { ExternalLink, Info } from 'lucide-react';
 import { getRateStaleness, formatDate } from '../../utils/dateFormatting';
 
 export const RatesOverview: React.FC = () => {
+  const [liveRate, setLiveRate] = React.useState<import('../../utils/liveRateService').LiveRateData | null>(null);
+  React.useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      const data = await import('../../utils/liveRateService').then(m => m.fetchLiveBcbRate());
+      if (!cancelled) setLiveRate(data);
+    };
+    load();
+    const interval = setInterval(load, 60000); // refresh every minute
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, []);
+
   return (
     <div className="space-y-6">
 
       {/* Título de Sección */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          {/* Live Rate Badge */}
+          {liveRate && (
+            <div className="px-3 py-1.5 rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 text-xs font-medium flex items-center gap-1.5">
+              <span>🟢 En vivo</span>
+              <span>{liveRate.rate.toFixed(2)} Bs/USD</span>
+              <span>(corte {liveRate.cutoffDate})</span>
+            </div>
+          )}
+
         <div>
           <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
             Tipo de Cambio Oficial del BCB
@@ -70,7 +94,7 @@ export const RatesOverview: React.FC = () => {
                       <div className="border-l border-slate-200 dark:border-slate-800 pl-3">
                         <span className="block text-[11px] font-medium text-slate-500 dark:text-slate-400">Venta (Bs)</span>
                         <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
-                          {rate.sellRate.toFixed(decimals)}
+                          {rate.baseCurrency === 'USD' && liveRate ? liveRate.rate.toFixed(decimals) : rate.sellRate.toFixed(decimals)}
                         </span>
                       </div>
                     </div>
@@ -80,7 +104,7 @@ export const RatesOverview: React.FC = () => {
                         {rate.baseCurrency === 'UFV' ? 'Valor de la UFV (Bs)' : 'TCO (Bs por unidad)'}
                       </span>
                       <span className="text-2xl font-bold text-slate-900 dark:text-white">
-                        {rate.sellRate.toFixed(decimals)}
+                        {rate.baseCurrency === 'USD' && liveRate ? liveRate.rate.toFixed(decimals) : rate.sellRate.toFixed(decimals)}
                       </span>
                     </div>
                   )}

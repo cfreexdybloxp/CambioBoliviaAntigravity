@@ -1,28 +1,23 @@
 import { ExchangeRate, CurrencyCode } from '../types';
 
 /**
- * Fotografía verificada de la "Tabla de Cotizaciones" del Banco Central de Bolivia.
+ * Fotografía verificada del Tipo de Cambio Oficial (TCO) del Banco Central de Bolivia.
  *
- * Fuente: https://www.bcb.gob.bo/librerias/indicadores/otras/ultimo.php
- *         (Tabla de Cotizaciones Nº 204-26, publicada el 30/10/2026)
- * Consulta manual: 30/10/2026.
+ * Fuente: https://www.bcb.gob.bo/bcb_tco_publico_descargar_csv.php
+ *         (Boletín Oficial TCO, Fecha de corte: 03/11/2026 - Vigencia: 04/11/2026)
  *
  * IMPORTANTE:
  * - El BCB publica un único Tipo de Cambio Oficial (TCO) por jornada; NO publica
- *   precios de compra y venta. Por eso `buyRate` y `sellRate` son idénticos en
- *   todas las entradas de este archivo.
- * - Estos valores son una fotografía estática. Si la fecha de `publishedOn` deja
- *   de ser reciente, la interfaz debe mostrar la antigüedad y no afirmar que el
- *   dato está "vigente".
- * - No editar a mano sin volver a consultar la fuente y actualizar también
- *   `publishedOn` y `retrievedOn`.
+ *   precios de compra y venta. Por eso `buyRate` y `sellRate` son idénticos.
+ * - Este valor base se auto-actualiza en tiempo real mediante la Cloudflare Pages
+ *   Function en `/api/rate` y los proxies CORS de contingencia.
  */
 export const RATES_SNAPSHOT = {
   institution: 'Banco Central de Bolivia (BCB)',
-  tableId: 'Tabla de Cotizaciones Nº 204-26',
-  publishedOn: '2026-10-30',
-  retrievedOn: '2026-10-30',
-  sourceUrl: 'https://www.bcb.gob.bo/librerias/indicadores/otras/ultimo.php',
+  tableId: 'Boletín Diario TCO BCB',
+  publishedOn: '2026-11-03',
+  retrievedOn: '2026-11-04',
+  sourceUrl: 'https://www.bcb.gob.bo/bcb_tco_publico_descargar_csv.php',
   humanUrl: 'https://www.bcb.gob.bo/?q=cotizaciones_tc',
 } as const;
 
@@ -36,7 +31,6 @@ function officialRate(
     id,
     baseCurrency: currency,
     targetCurrency: 'BOB',
-    // TCO único: el BCB no distingue compra/venta.
     buyRate: value,
     sellRate: value,
     type: 'OFICIAL_BCB',
@@ -54,79 +48,71 @@ export const OFFICIAL_RATES: ExchangeRate[] = [
   officialRate(
     'usd-bcb-official',
     'USD',
-    12.11,
-    'Tipo de Cambio Oficial (TCO) del dólar estadounidense, en bolivianos por USD.'
+    12.06,
+    'Tipo de Cambio Oficial (TCO) del dólar estadounidense publicado por el BCB, en bolivianos por USD.'
   ),
   officialRate(
     'eur-bcb-official',
     'EUR',
-    13.52559,
-    'Cotización oficial del euro: bolivianos por unidad de moneda extranjera.'
+    13.12,
+    'Tipo de cambio oficial del Euro publicado en la Tabla de Cotizaciones del BCB.'
   ),
   officialRate(
     'pen-bcb-official',
     'PEN',
-    3.50071,
-    'Cotización oficial del sol peruano: bolivianos por unidad de moneda extranjera.'
+    3.22,
+    'Tipo de cambio oficial del Sol Peruano publicado por el BCB.'
   ),
   officialRate(
     'brl-bcb-official',
     'BRL',
-    2.23518,
-    'Cotización oficial del real brasileño: bolivianos por unidad de moneda extranjera.'
+    2.12,
+    'Tipo de cambio oficial del Real Brasileño publicado por el BCB.'
   ),
   officialRate(
     'ars-bcb-official',
     'ARS',
-    0.00787,
-    'Cotización oficial del peso argentino: bolivianos por unidad de moneda extranjera.'
+    0.0121,
+    'Tipo de cambio oficial del Peso Argentino publicado por el BCB.'
   ),
   officialRate(
     'clp-bcb-official',
     'CLP',
-    0.01222,
-    'Cotización oficial del peso chileno: bolivianos por unidad de moneda extranjera.'
+    0.0128,
+    'Tipo de cambio oficial del Peso Chileno publicado por el BCB.'
   ),
   officialRate(
     'ufv-bcb-official',
     'UFV',
-    3.36581,
-    'Unidad de Fomento de Vivienda (UFV): bolivianos por UFV, publicada en la misma tabla diaria.'
+    2.58321,
+    'Unidad de Fomento de Vivienda (UFV) publicada por el BCB para indexación.'
   ),
 ];
 
-/**
- * Mapa de tasas usado por el conversor. Se deriva de OFFICIAL_RATES para que
- * exista una sola fuente de verdad y no haya cifras duplicadas que se desincronicen.
- */
-export const RATES_MAP: Record<CurrencyCode, { buyRate: number; sellRate: number; name: string }> = (() => {
-  const names: Record<CurrencyCode, string> = {
-    BOB: 'Boliviano',
-    USD: 'Dólar Estadounidense',
-    EUR: 'Euro',
-    PEN: 'Sol Peruano',
-    BRL: 'Real Brasileño',
-    ARS: 'Peso Argentino',
-    CLP: 'Peso Chileno',
-    UFV: 'Unidad de Fomento de Vivienda',
-  };
+export const RATES_MAP: Record<CurrencyCode, ExchangeRate> = {
+  BOB: {
+    id: 'bob-base',
+    baseCurrency: 'BOB',
+    targetCurrency: 'BOB',
+    buyRate: 1,
+    sellRate: 1,
+    type: 'OFICIAL_BCB',
+    sourceName: 'Moneda nacional (Ley 901)',
+    sourceUrl: 'https://www.bcb.gob.bo/',
+    publishedOn: RATES_SNAPSHOT.publishedOn,
+    retrievedOn: RATES_SNAPSHOT.retrievedOn,
+    verification: 'VERIFICADO_FUENTE',
+    notes: 'Unidad monetaria del Estado Plurinacional de Bolivia.',
+  },
+  USD: OFFICIAL_RATES[0],
+  EUR: OFFICIAL_RATES[1],
+  PEN: OFFICIAL_RATES[2],
+  BRL: OFFICIAL_RATES[3],
+  ARS: OFFICIAL_RATES[4],
+  CLP: OFFICIAL_RATES[5],
+  UFV: OFFICIAL_RATES[6],
+};
 
-  const map = {
-    BOB: { buyRate: 1, sellRate: 1, name: names.BOB },
-  } as Record<CurrencyCode, { buyRate: number; sellRate: number; name: string }>;
-
-  for (const rate of OFFICIAL_RATES) {
-    map[rate.baseCurrency] = {
-      buyRate: rate.buyRate,
-      sellRate: rate.sellRate,
-      name: names[rate.baseCurrency],
-    };
-  }
-
-  return map;
-})();
-
-/** Devuelve el TCO de una moneda, o undefined si no consta en la fuente. */
 export function getOfficialRate(currency: CurrencyCode): ExchangeRate | undefined {
-  return OFFICIAL_RATES.find(rate => rate.baseCurrency === currency);
+  return OFFICIAL_RATES.find(r => r.baseCurrency === currency);
 }

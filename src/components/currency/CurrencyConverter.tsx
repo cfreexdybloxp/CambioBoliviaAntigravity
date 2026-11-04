@@ -7,7 +7,23 @@ import { getRateStaleness, formatDate } from '../../utils/dateFormatting';
 
 export const CurrencyConverter: React.FC = () => {
   // Manejamos el monto como string para permitir borrar completamente sin que se pegue un cero
+  const [liveRate, setLiveRate] = React.useState<import('../../utils/liveRateService').LiveRateData | null>(null);
   const [amount, setAmount] = useState<string>('100');
+  const [amount, setAmount] = useState<string>('100');
+  React.useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      const data = await import('../../utils/liveRateService').then(m => m.fetchLiveBcbRate());
+      if (!cancelled) setLiveRate(data);
+    };
+    load();
+    const interval = setInterval(load, 60000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, []);
+
   const [fromCurrency, setFromCurrency] = useState<CurrencyCode>('USD');
   const [toCurrency, setToCurrency] = useState<CurrencyCode>('BOB');
   const [copied, setCopied] = useState<boolean>(false);
@@ -31,6 +47,16 @@ export const CurrencyConverter: React.FC = () => {
   const parsedAmount = parseFloat(amount);
 
   const conversionResult = useMemo(() => {
+    // Use live BCB rate when converting between USD and BOB
+    if (liveRate && ((fromCurrency === 'USD' && toCurrency === 'BOB') || (fromCurrency === 'BOB' && toCurrency === 'USD'))) {
+      const rate = fromCurrency === 'USD' ? liveRate.rate : 1 / liveRate.rate;
+      const result = parsedAmount * rate;
+      return {
+        result,
+        rateApplied: rate,
+        calculationExplanation: `Tasa en vivo BCB: ${liveRate.rate.toFixed(4)} Bs/USD`
+      };
+    }
     const val = Number.isFinite(parsedAmount) ? parsedAmount : 0;
     try {
       return convertAmount(val, fromCurrency, toCurrency, RATES_MAP);
@@ -41,7 +67,7 @@ export const CurrencyConverter: React.FC = () => {
         calculationExplanation: e.message || 'Error en cálculo'
       };
     }
-  }, [parsedAmount, fromCurrency, toCurrency]);
+  }, [parsedAmount, fromCurrency, toCurrency, liveRate]);
 
   const activeRateMeta = useMemo(() => {
     const pair = OFFICIAL_RATES.find(
