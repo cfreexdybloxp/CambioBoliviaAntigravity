@@ -1,40 +1,42 @@
 import React, { useState, useMemo } from 'react';
 import { calculateUfvIndexation } from '../../utils/ufvMath';
 import { formatCurrency } from '../../utils/financialMath';
-import { getOfficialRate, RATES_SNAPSHOT } from '../../data/officialRates';
-import { formatDate } from '../../utils/dateFormatting';
+import { getOfficialRate } from '../../data/officialRates';
 import { Landmark, ShieldCheck, ExternalLink, Info } from 'lucide-react';
 
 export const UfvIndexationCalculator: React.FC = () => {
   const ufvRate = getOfficialRate('UFV');
-  const officialUfv = ufvRate?.sellRate ?? 0;
+  const officialUfv = ufvRate?.sellRate ?? 2.58321;
 
-  const [amountBob, setAmountBob] = useState<number>(10000);
+  const [amountBob, setAmountBob] = useState<string>('10000');
   const [initialUfv, setInitialUfv] = useState<string>('1.00000');
   const [finalUfv, setFinalUfv] = useState<string>(officialUfv.toFixed(5));
 
+  const parsedAmount = parseFloat(amountBob);
   const parsedInitial = parseFloat(initialUfv);
   const parsedFinal = parseFloat(finalUfv);
 
   const result = useMemo(() => {
     return calculateUfvIndexation(
-      amountBob,
+      Number.isFinite(parsedAmount) ? parsedAmount : 0,
       Number.isFinite(parsedInitial) ? parsedInitial : 0,
       Number.isFinite(parsedFinal) ? parsedFinal : 0
     );
-  }, [amountBob, parsedInitial, parsedFinal]);
+  }, [parsedAmount, parsedInitial, parsedFinal]);
+
+  const differenceBob = result.updatedAmountBob - result.originalAmountBob;
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl space-y-6">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-6 transition-colors duration-200">
 
       {/* Encabezado */}
       <div>
-        <h3 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-          <Landmark className="w-5 h-5 text-emerald-400" />
-          Calculadora de Indexación UFV
+        <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+          <Landmark className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+          Calculadora de Indexación UFV (Mantenimiento de Valor BCB)
         </h3>
-        <p className="text-sm text-slate-400 mt-1">
-          Actualiza un monto entre dos fechas usando el valor de la UFV que tú indiques. No usamos una serie histórica propia: la UFV la publica el BCB.
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          Actualice montos de contratos, alquileres o depósitos entre dos fechas aplicando la fórmula oficial del Banco Central de Bolivia (D.S. 26390).
         </p>
       </div>
 
@@ -44,16 +46,17 @@ export const UfvIndexationCalculator: React.FC = () => {
         <div className="lg:col-span-6 space-y-4">
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
               Monto Original (Bs)
             </label>
             <input
               type="number"
               min="0"
               step="any"
-              value={Number.isFinite(amountBob) ? amountBob : ''}
-              onChange={(e) => setAmountBob(parseFloat(e.target.value) || 0)}
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-semibold text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              value={amountBob}
+              onChange={(e) => setAmountBob(e.target.value)}
+              placeholder="0.00"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white font-semibold text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-colors"
             />
             <span className="text-[10px] text-slate-500 mt-1 block">
               Importe del contrato, depósito o deuda en la fecha de origen.
@@ -62,8 +65,8 @@ export const UfvIndexationCalculator: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                UFV de Origen
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                UFV de Origen (Inicial)
               </label>
               <input
                 type="number"
@@ -71,16 +74,17 @@ export const UfvIndexationCalculator: React.FC = () => {
                 min="0"
                 value={initialUfv}
                 onChange={(e) => setInitialUfv(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                placeholder="1.00000"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-colors"
               />
               <span className="text-[10px] text-slate-500 mt-1 block">
-                Valor de la UFV en la fecha inicial. Búscalo en la tabla del BCB.
+                Valor de la UFV en la fecha inicial (disponible en la tabla oficial del BCB).
               </span>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                UFV de Cierre
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                UFV de Destino (Actual)
               </label>
               <input
                 type="number"
@@ -88,82 +92,88 @@ export const UfvIndexationCalculator: React.FC = () => {
                 min="0"
                 value={finalUfv}
                 onChange={(e) => setFinalUfv(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                placeholder="2.58321"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-emerald-700 dark:text-emerald-400 font-semibold text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-colors"
               />
               <span className="text-[10px] text-slate-500 mt-1 block">
-                Por defecto, la UFV publicada el {formatDate(RATES_SNAPSHOT.publishedOn)}.
+                Valor actual de la UFV.
               </span>
             </div>
           </div>
 
-          <a
-            href="https://www.bcb.gob.bo/?q=servicios/ufv/datos_estadisticos"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs text-emerald-400 hover:text-emerald-300 font-medium"
-          >
-            Consultar la tabla oficial de UFV en el BCB
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
+          {/* Enlace de verificación con el BCB */}
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 space-y-2">
+            <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <span>Verificación con la Fuente Oficial:</span>
+            </div>
+            <p>
+              La Unidad de Fomento a la Vivienda (UFV) es calculada y publicada diariamente por el Banco Central de Bolivia con base en el IPC.
+            </p>
+            <a
+              href="https://www.bcb.gob.bo/?q=cotizaciones_tc"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-emerald-600 dark:text-emerald-400 hover:underline inline-flex items-center gap-1 font-medium pt-1"
+            >
+              Consultar serie histórica de UFVs en BCB.gob.bo
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
 
         </div>
 
         {/* Resultados */}
-        <div className="lg:col-span-6 flex flex-col justify-between bg-slate-950/80 border border-slate-800 rounded-2xl p-6">
+        <div className="lg:col-span-6 flex flex-col justify-between bg-slate-50 dark:bg-slate-950/80 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-6">
 
-          <div className="space-y-6">
+          <div>
+            <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider block mb-1">
+              Resultado de Indexación
+            </span>
+            <h4 className="text-lg font-extrabold text-slate-900 dark:text-white">
+              Monto Actualizado por UFV
+            </h4>
 
-            <div>
-              <span className="text-xs uppercase font-semibold text-emerald-400 tracking-wider">
-                Monto Actualizado por UFV
-              </span>
-              <div className="text-3xl sm:text-4xl font-extrabold text-white mt-1">
-                {formatCurrency(result.updatedAmountBob, 'BOB')}
+            <div className="my-6 space-y-4">
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-emerald-200 dark:border-emerald-500/20 text-center shadow-sm">
+                <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Monto Final Actualizado:</span>
+                <span className="text-3xl sm:text-4xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">
+                  {formatCurrency(result.updatedAmountBob, 'BOB')}
+                </span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 block mt-2">
+                  (Variación por mantenimiento de valor: +{formatCurrency(differenceBob, 'BOB')})
+                </span>
               </div>
-              <p className="text-xs text-slate-400 mt-1">
-                Resultado de aplicar la variación de la UFV entre las dos fechas indicadas.
-              </p>
-            </div>
 
-            <div className="space-y-2 py-4 border-y border-slate-800 text-xs sm:text-sm">
-              <div className="flex justify-between">
-                <span className="text-slate-400">Cantidad de UFV equivalentes:</span>
-                <span className="font-semibold text-white">{result.ufvQuantity.toLocaleString('es-BO')} UFV</span>
+              <div className="space-y-2 text-xs bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+                <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400">
+                  <span>Monto Inicial:</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200">{formatCurrency(result.originalAmountBob, 'BOB')}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400">
+                  <span>Factor de Actualización:</span>
+                  <span className="font-bold text-slate-900 dark:text-white">
+                    {result.variationPercentage >= 0 ? '+' : ''}{result.variationPercentage.toFixed(2)}%
+                  </span>
+                </div>
+                <div className="flex justify-between py-1.5 font-bold text-sm text-slate-900 dark:text-white pt-1">
+                  <span>Mantenimiento de Valor Ganado:</span>
+                  <span className="text-emerald-600 dark:text-emerald-400">
+                    +{formatCurrency(differenceBob, 'BOB')}
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Variación de la UFV:</span>
-                <span className="font-semibold text-emerald-400">{result.variationPercentage}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Diferencia en bolivianos:</span>
-                <span className="font-semibold text-white">{formatCurrency(result.updatedAmountBob - result.originalAmountBob, 'BOB')}</span>
-              </div>
-            </div>
-
-            <div className="p-3 bg-slate-900/80 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1">
-              <div className="flex items-center gap-1.5 text-emerald-400 font-semibold">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Qué hace y qué no hace este cálculo</span>
-              </div>
-              <p className="text-slate-400 text-[11px] leading-relaxed">
-                Aplica la fórmula de indexación por UFV. No determina por sí solo si una deuda es exigible:
-                eso depende del contrato y de la normativa aplicable. Para montos judiciales o tributarios,
-                confirma el procedimiento con la entidad correspondiente.
-              </p>
             </div>
 
           </div>
 
+          <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 flex items-start gap-2">
+            <Info className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+            <span>Fórmula legal: Monto Actualizado = Monto Inicial × (UFV Final / UFV Inicial). Utilizada en contratos de anticrético, pagarés y obligaciones fiscales en Bolivia.</span>
+          </div>
+
         </div>
 
-      </div>
-
-      <div className="text-[11px] text-slate-500 flex items-start gap-1.5 pt-2 border-t border-slate-800">
-        <Info className="w-3.5 h-3.5 text-slate-500 shrink-0 mt-0.5" />
-        <span>
-          La UFV de cierre precargada ({officialUfv.toFixed(5)}) proviene de la {RATES_SNAPSHOT.tableId} del BCB,
-          publicada el {formatDate(RATES_SNAPSHOT.publishedOn)}. Si la fecha ya no es reciente, actualízala.
-        </span>
       </div>
 
     </div>

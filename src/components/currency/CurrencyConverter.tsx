@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { ArrowLeftRight, Copy, Check, Clock, Info, ShieldCheck } from 'lucide-react';
 import { CurrencyCode } from '../../types';
-import { RATES_MAP, OFFICIAL_RATES, getOfficialRate } from '../../data/officialRates';
+import { RATES_MAP, OFFICIAL_RATES } from '../../data/officialRates';
 import { convertAmount, formatCurrency, roundCurrency } from '../../utils/financialMath';
 import { getRateStaleness, formatDate } from '../../utils/dateFormatting';
 
 export const CurrencyConverter: React.FC = () => {
-  const [amount, setAmount] = useState<number>(100);
+  // Manejamos el monto como string para permitir borrar completamente sin que se pegue un cero
+  const [amount, setAmount] = useState<string>('100');
   const [fromCurrency, setFromCurrency] = useState<CurrencyCode>('USD');
   const [toCurrency, setToCurrency] = useState<CurrencyCode>('BOB');
   const [copied, setCopied] = useState<boolean>(false);
@@ -27,9 +28,12 @@ export const CurrencyConverter: React.FC = () => {
     setToCurrency(fromCurrency);
   };
 
+  const parsedAmount = parseFloat(amount);
+
   const conversionResult = useMemo(() => {
+    const val = Number.isFinite(parsedAmount) ? parsedAmount : 0;
     try {
-      return convertAmount(amount, fromCurrency, toCurrency, RATES_MAP);
+      return convertAmount(val, fromCurrency, toCurrency, RATES_MAP);
     } catch (e: any) {
       return {
         result: 0,
@@ -37,11 +41,14 @@ export const CurrencyConverter: React.FC = () => {
         calculationExplanation: e.message || 'Error en cálculo'
       };
     }
-  }, [amount, fromCurrency, toCurrency]);
+  }, [parsedAmount, fromCurrency, toCurrency]);
 
   const activeRateMeta = useMemo(() => {
-    const currency = fromCurrency === 'BOB' ? toCurrency : fromCurrency;
-    return getOfficialRate(currency) || getOfficialRate('USD') || OFFICIAL_RATES[0];
+    const pair = OFFICIAL_RATES.find(
+      r => (r.baseCurrency === fromCurrency && r.targetCurrency === toCurrency) ||
+           (r.baseCurrency === toCurrency && r.targetCurrency === fromCurrency)
+    ) || OFFICIAL_RATES[0];
+    return pair;
   }, [fromCurrency, toCurrency]);
 
   const staleness = useMemo(() => {
@@ -62,10 +69,10 @@ export const CurrencyConverter: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-            Conversor con Tipo de Cambio Oficial (BCB)
+            Conversor de Divisas Oficial y Comercial
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Cálculo transparente con la tabla diaria del Banco Central de Bolivia y su fecha de publicación.
+            Cálculos transparentes con cotizaciones del Banco Central de Bolivia y entidades reguladas.
           </p>
         </div>
 
@@ -89,10 +96,10 @@ export const CurrencyConverter: React.FC = () => {
               type="number"
               min="0"
               step="any"
-              value={isNaN(amount) ? '' : amount}
-              onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-lg font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-lg font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
             />
           </div>
 
@@ -160,9 +167,9 @@ export const CurrencyConverter: React.FC = () => {
         {[10, 50, 100, 500, 1000].map((val) => (
           <button
             key={val}
-            onClick={() => setAmount(val)}
+            onClick={() => setAmount(val.toString())}
             className={`text-xs px-2.5 py-1 rounded-md border transition-colors ${
-              amount === val
+              amount === val.toString()
                 ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm'
                 : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
             }`}
@@ -187,10 +194,7 @@ export const CurrencyConverter: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-slate-200 dark:border-slate-800/50 text-slate-500">
           <div className="flex items-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-            <span>
-              Fuente: <strong className="text-slate-700 dark:text-slate-300">{activeRateMeta.sourceName}</strong>
-              {activeRateMeta.sourceTable ? ` — ${activeRateMeta.sourceTable}` : ''}
-            </span>
+            <span>Fuente: <strong className="text-slate-700 dark:text-slate-300">{activeRateMeta.sourceName}</strong></span>
           </div>
           <a
             href={activeRateMeta.sourceUrl}
@@ -198,15 +202,9 @@ export const CurrencyConverter: React.FC = () => {
             rel="noopener noreferrer"
             className="text-emerald-600 dark:text-emerald-400 hover:underline font-medium"
           >
-            Ver tabla del BCB ↗
+            Comprobar fuente oficial ↗
           </a>
         </div>
-
-        {staleness.status !== 'fresh' && (
-          <p className="pt-2 border-t border-slate-200 dark:border-slate-800/50 text-amber-700 dark:text-amber-400">
-            {staleness.description}
-          </p>
-        )}
       </div>
 
     </div>

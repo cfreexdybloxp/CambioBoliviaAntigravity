@@ -46,16 +46,16 @@ export const ExchangeHouseMap: React.FC<ExchangeHouseMapProps> = ({
     // Crear icono personalizado en SVG puro
     const defaultIcon = L.divIcon({
       className: 'custom-map-pin',
-      html: `<div style="background-color: #059669; width: 24px; height: 24px; border-radius: 50%; border: 2px solid #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: bold;">Bs</div>`,
-      iconSize: [24, 24],
-      iconAnchor: [12, 12],
+      html: `<div style="background-color: #059669; width: 26px; height: 26px; border-radius: 50%; border: 2px solid #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: bold;">Bs</div>`,
+      iconSize: [26, 26],
+      iconAnchor: [13, 13],
     });
 
     const activeIcon = L.divIcon({
       className: 'custom-map-pin-active',
-      html: `<div style="background-color: #f59e0b; width: 30px; height: 30px; border-radius: 50%; border: 3px solid #ffffff; box-shadow: 0 6px 10px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; color: #111827; font-size: 13px; font-weight: bold;">★</div>`,
-      iconSize: [30, 30],
-      iconAnchor: [15, 15],
+      html: `<div style="background-color: #d97706; width: 32px; height: 32px; border-radius: 50%; border: 3px solid #ffffff; box-shadow: 0 6px 12px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 14px; font-weight: bold;">★</div>`,
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
     });
 
     // Añadir marcadores
@@ -66,15 +66,19 @@ export const ExchangeHouseMap: React.FC<ExchangeHouseMapProps> = ({
       }).addTo(map);
 
       marker.bindPopup(`
-        <div style="font-family: sans-serif; font-size: 12px; line-height: 1.4;">
-          <strong style="font-size: 13px; color: #10b981;">${house.commercialName}</strong><br/>
-          <span style="color: #94a3b8;">${house.address} (${house.city})</span><br/>
-          <span style="display: inline-block; background-color: #064e3b; color: #34d399; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-top: 4px;">
-            Licencia: ${house.asfiLicense}
+        <div style="font-family: system-ui, -apple-system, sans-serif; font-size: 12px; line-height: 1.4; min-width: 180px;">
+          <strong style="font-size: 13px; color: #059669; display: block; margin-bottom: 2px;">${house.commercialName}</strong>
+          <span style="color: #64748b; font-size: 11px;">${house.address} (${house.city})</span><br/>
+          <span style="display: inline-block; background-color: #ecfdf5; color: #065f46; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-top: 4px; border: 1px solid #a7f3d0;">
+            Licencia ASFI: ${house.asfiLicense}
           </span>
-          <div style="margin-top: 6px; border-top: 1px solid #334155; padding-top: 4px;">
-            <strong>Dólar compra:</strong> Bs ${house.publishedRates.usdBuy || '-'} | 
-            <strong>Venta:</strong> Bs ${house.publishedRates.usdSell || '-'}
+          <div style="margin-top: 6px; border-top: 1px solid #e2e8f0; padding-top: 4px; font-size: 11px;">
+            <span><strong>Dólar compra:</strong> Bs ${house.publishedRates.usdBuy || '-'} | <strong>Venta:</strong> Bs ${house.publishedRates.usdSell || '-'}</span>
+          </div>
+          <div style="margin-top: 4px;">
+            <a href="https://www.google.com/maps/search/?api=1&query=${house.lat},${house.lng}" target="_blank" rel="noopener noreferrer" style="color: #059669; text-decoration: underline; font-weight: bold; font-size: 11px;">
+              Abrir en Google Maps ↗
+            </a>
           </div>
         </div>
       `);
@@ -100,9 +104,9 @@ export const ExchangeHouseMap: React.FC<ExchangeHouseMapProps> = ({
   }, [houses, selectedHouseId]);
 
   return (
-    <div className="relative w-full h-[450px] rounded-2xl overflow-hidden border border-slate-800 shadow-xl">
+    <div className="relative w-full h-[450px] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-xl transition-colors">
       <div ref={mapContainerRef} className="w-full h-full" />
-      <div className="absolute bottom-2 left-2 z-[400] bg-slate-900/90 backdrop-blur px-2.5 py-1 rounded-md border border-slate-800 text-[10px] text-slate-400">
+      <div className="absolute bottom-2 left-2 z-[400] bg-white/95 dark:bg-slate-900/90 backdrop-blur px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-800 text-[10px] text-slate-600 dark:text-slate-400 shadow-sm">
         Cartografía comunitaria libre © OpenStreetMap (0 Bs)
       </div>
     </div>

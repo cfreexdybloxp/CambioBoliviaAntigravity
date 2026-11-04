@@ -12,17 +12,27 @@ import {
 } from 'lucide-react';
 
 export const CustomsTariffCalculator: React.FC = () => {
-  const [cifValueUsd, setCifValueUsd] = useState<number>(2000);
-  const [exchangeRate, setExchangeRate] = useState<number>(RATES_MAP.USD.sellRate); // TCO BCB
+  const [cifValueUsd, setCifValueUsd] = useState<string>('2000');
+  const [exchangeRate, setExchangeRate] = useState<string>(RATES_MAP.USD.sellRate.toString());
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>(BOLIVIAN_TARIFF_CATEGORIES[3].id); // Confección nueva
-  const [agencyFeesBob, setAgencyFeesBob] = useState<number>(450); // Despacho y almacén
+  const [agencyFeesBob, setAgencyFeesBob] = useState<string>('450');
 
   const cifBob = useMemo(() => {
-    return Math.max(0, cifValueUsd * exchangeRate);
+    const cifUsd = parseFloat(cifValueUsd);
+    const exRate = parseFloat(exchangeRate);
+    if (!Number.isFinite(cifUsd) || !Number.isFinite(exRate) || cifUsd < 0 || exRate <= 0) {
+      return 0;
+    }
+    return cifUsd * exRate;
   }, [cifValueUsd, exchangeRate]);
 
   const calculation = useMemo(() => {
-    return calculateBolivianCustoms(cifBob, selectedCategoryId, agencyFeesBob);
+    const fees = parseFloat(agencyFeesBob);
+    return calculateBolivianCustoms(
+      cifBob, 
+      selectedCategoryId, 
+      Number.isFinite(fees) ? Math.max(0, fees) : 0
+    );
   }, [cifBob, selectedCategoryId, agencyFeesBob]);
 
   const currentCategory = useMemo(() => {
@@ -30,15 +40,15 @@ export const CustomsTariffCalculator: React.FC = () => {
   }, [selectedCategoryId]);
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl space-y-6">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-6 transition-colors duration-200">
       
       {/* Encabezado */}
       <div>
-        <h3 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-          <Scale className="w-5 h-5 text-emerald-400" />
+        <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+          <Scale className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
           Estimador Arancelario e IVA de Importación Formal (Aduana Bolivia)
         </h3>
-        <p className="text-sm text-slate-400 mt-1">
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
           Cálculo tributario formal con base en la Ley General de Aduanas (Ley Nº 1990) y el Gravamen Arancelario vigente en Bolivia.
         </p>
       </div>
@@ -50,7 +60,7 @@ export const CustomsTariffCalculator: React.FC = () => {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                 Valor CIF Frontera (USD)
               </label>
               <input
@@ -58,8 +68,9 @@ export const CustomsTariffCalculator: React.FC = () => {
                 min="0"
                 step="any"
                 value={cifValueUsd}
-                onChange={(e) => setCifValueUsd(parseFloat(e.target.value) || 0)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-semibold text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                onChange={(e) => setCifValueUsd(e.target.value)}
+                placeholder="0.00"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white font-semibold text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-colors"
               />
               <span className="text-[10px] text-slate-500 mt-1 block">
                 Costo mercancía + Seguro + Flete internacional hasta aduana boliviana.
@@ -67,147 +78,157 @@ export const CustomsTariffCalculator: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                 Tipo de Cambio Oficial (Bs/USD)
               </label>
               <input
                 type="number"
+                min="0"
                 step="any"
                 value={exchangeRate}
-                onChange={(e) => setExchangeRate(parseFloat(e.target.value) || RATES_MAP.USD.sellRate)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-slate-200 font-semibold text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                onChange={(e) => setExchangeRate(e.target.value)}
+                placeholder="6.96"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 font-semibold text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-colors"
               />
               <span className="text-[10px] text-slate-500 mt-1 block">
-                Valor CIF convertido: <strong>{formatCurrency(cifBob, 'BOB')}</strong>
+                TCO fijado por el BCB para liquidación de pólizas aduaneras.
               </span>
             </div>
           </div>
 
-          {/* Selector de Categoría Arancelaria */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
               Partida Arancelaria / Tipo de Mercancía
             </label>
             <select
               value={selectedCategoryId}
               onChange={(e) => setSelectedCategoryId(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-xs sm:text-sm text-white font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-colors"
             >
               {BOLIVIAN_TARIFF_CATEGORIES.map((cat) => (
                 <option key={cat.id} value={cat.id}>
-                  {cat.name} {cat.isProhibited ? '⚠️' : `(GA: ${cat.gaRatePercentage}%)`}
+                  {cat.name} — GA: {cat.gaRatePercentage}% {cat.isProhibited ? '(PROHIBIDO DS 28761)' : ''}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Información y Ejemplos de la Categoría */}
-          {currentCategory && (
-            <div className={`p-4 rounded-xl border text-xs space-y-1.5 ${
-              currentCategory.isProhibited 
-                ? 'bg-rose-950/40 border-rose-800 text-rose-300' 
-                : 'bg-slate-950/60 border-slate-800 text-slate-300'
-            }`}>
-              <div className="flex items-center justify-between font-semibold">
-                <span>Gravamen Arancelario (GA):</span>
-                <span className={currentCategory.isProhibited ? 'text-rose-400 font-bold' : 'text-emerald-400 font-bold'}>
-                  {currentCategory.isProhibited ? 'PROHIBIDO' : `${currentCategory.gaRatePercentage}%`}
-                </span>
-              </div>
-              <p className="text-slate-400 text-[11px] leading-relaxed">
-                {currentCategory.legalNote}
-              </p>
-              <div className="text-[10px] text-slate-500 pt-1">
-                <strong>Artículos típicos:</strong> {currentCategory.typicalItems}
-              </div>
-            </div>
-          )}
-
-          <div className="p-3 bg-amber-950/20 border border-amber-900/50 rounded-xl text-[11px] text-amber-200/90 leading-relaxed">
-            <strong>Estimación, no liquidación oficial.</strong> Las categorías de esta calculadora son
-            agrupaciones didácticas, no la clasificación arancelaria de 8 dígitos. El Gravamen Arancelario real
-            depende de la subpartida del producto en el Arancel Aduanero de Importación. Confirma la
-            clasificación con la Aduana Nacional o un despachante antes de importar.
-          </div>
-
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-              Despacho Aduanero y Almacén Estimado (Bs)
+            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+              Gastos de Despachante y Almacén Aduanero (Bs)
             </label>
             <input
               type="number"
               min="0"
+              step="any"
               value={agencyFeesBob}
-              onChange={(e) => setAgencyFeesBob(parseFloat(e.target.value) || 0)}
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2 text-xs text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              onChange={(e) => setAgencyFeesBob(e.target.value)}
+              placeholder="0.00"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-colors"
             />
+            <span className="text-[10px] text-slate-500 mt-1 block">
+              Honorarios de agencia despachante, canon de recinto (ALBO/DAB) y validación SIDUNEA.
+            </span>
           </div>
+
+          {/* Bloqueo Estricto DS 28761 (Mercancía Prohibida) */}
+          {currentCategory?.isProhibited && (
+            <div className="bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800 p-4 rounded-xl text-xs space-y-2 text-rose-900 dark:text-rose-200">
+              <div className="flex items-center gap-2 font-bold text-rose-700 dark:text-rose-300 text-sm">
+                <AlertTriangle className="w-5 h-5 shrink-0" />
+                <span>MERCANCÍA PROHIBIDA DE IMPORTACIÓN (D.S. Nº 28761)</span>
+              </div>
+              <p className="leading-relaxed text-rose-800 dark:text-rose-300/90">
+                El Decreto Supremo Nº 28761 prohíbe de manera expresa la internación a territorio aduanero nacional de prendería usada, ropa de vestir usada, calzado usado y desechos textiles. 
+              </p>
+              <div className="pt-1 font-semibold text-[11px] text-rose-700 dark:text-rose-400">
+                Consecuencia legal: Decomiso directo por la Aduana Nacional e incautación penal bajo la Ley Nº 1990 sin derecho a pago de tributos.
+              </div>
+            </div>
+          )}
+
+          {!currentCategory?.isProhibited && (
+            <div className="bg-slate-50 dark:bg-slate-950/60 p-4 rounded-xl border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 space-y-1">
+              <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-300">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <span>Base Imponible de la Aduana Nacional (CIF Frontera):</span>
+              </div>
+              <p>
+                {formatCurrency(cifBob, 'BOB')} (calculado al Tipo de Cambio Oficial de {exchangeRate} Bs/USD).
+              </p>
+            </div>
+          )}
 
         </div>
 
         {/* Resultados Tributarios */}
-        <div className="lg:col-span-6 flex flex-col justify-between bg-slate-950/80 border border-slate-800 rounded-2xl p-6">
+        <div className="lg:col-span-6 flex flex-col justify-between bg-slate-50 dark:bg-slate-950/80 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-6">
           
-          {calculation.isProhibited ? (
-            <div className="p-5 bg-rose-950/60 border border-rose-700 rounded-xl text-rose-200 text-xs space-y-3">
-              <div className="flex items-center gap-2 text-rose-300 font-bold text-sm">
-                <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0" />
-                MERCANCÍA TERMINANTEMENTE PROHIBIDA
-              </div>
-              <p className="leading-relaxed">
-                {calculation.prohibitionMessage}
-              </p>
-              <div className="pt-2 border-t border-rose-900/60 text-[11px] text-rose-300">
-                La Aduana Nacional procede al comiso de la prendería usada y su destrucción mediante trituración en Subasta Ecológica. No arriesgue su capital en actividades ilícitas.
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              
-              <div>
-                <span className="text-xs uppercase font-semibold text-emerald-400 tracking-wider">
-                  Total Tributos e Impuestos Aduaneros
-                </span>
-                <div className="text-3xl sm:text-4xl font-extrabold text-white mt-1">
-                  {formatCurrency(calculation.totalTaxesAndDutiesBob, 'BOB')}
-                </div>
-                <p className="text-xs text-slate-400 mt-1">
-                  Monto requerido para nacionalizar la mercancía formalmente.
+          <div>
+            <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider block mb-1">
+              Liquidación Tributaria Estimada
+            </span>
+            <h4 className="text-lg font-extrabold text-slate-900 dark:text-white">
+              Tributos Aduaneros a Pagar
+            </h4>
+
+            {currentCategory?.isProhibited ? (
+              <div className="my-8 text-center p-6 bg-white dark:bg-slate-900 rounded-2xl border border-rose-200 dark:border-rose-900/40 text-rose-700 dark:text-rose-400 space-y-2">
+                <AlertTriangle className="w-8 h-8 mx-auto" />
+                <span className="block font-bold text-sm">NO CALCULABLE</span>
+                <p className="text-xs text-slate-500">
+                  No se liquidan aranceles para mercancías prohibidas por el Decreto Supremo Nº 28761.
                 </p>
               </div>
+            ) : calculation ? (
+              <div className="space-y-4 my-6">
+                
+                <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-emerald-200 dark:border-emerald-500/20 text-center shadow-sm">
+                  <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Total Tributos Fiscales (GA + IVA):</span>
+                  <span className="text-3xl sm:text-4xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">
+                    {formatCurrency(calculation.totalTaxesAndDutiesBob, 'BOB')}
+                  </span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1">
+                    (Monto a pagar al Servicio de Impuestos / Aduana)
+                  </span>
+                </div>
 
-              {/* Desglose de Tributos */}
-              <div className="space-y-2 py-4 border-y border-slate-800 text-xs sm:text-sm">
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Gravamen Arancelario ({calculation.gaPercentage}% sobre CIF):</span>
-                  <span className="font-semibold text-white">{formatCurrency(calculation.gaAmountBob, 'BOB')}</span>
+                <div className="space-y-2 text-xs bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400">
+                    <span>Gravamen Arancelario (GA {calculation.gaPercentage}%):</span>
+                    <span className="font-semibold text-slate-800 dark:text-slate-200">{formatCurrency(calculation.gaAmountBob, 'BOB')}</span>
+                  </div>
+
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400">
+                    <span>Base Imponible del IVA Aduanero:</span>
+                    <span className="font-semibold text-slate-800 dark:text-slate-200">{formatCurrency(calculation.cifValueBob + calculation.gaAmountBob, 'BOB')}</span>
+                  </div>
+
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400">
+                    <span>IVA Importaciones Efectivo (14,94%):</span>
+                    <span className="font-semibold text-slate-800 dark:text-slate-200">{formatCurrency(calculation.ivaAmountBob, 'BOB')}</span>
+                  </div>
+
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400">
+                    <span>Gastos Despacho y Almacén:</span>
+                    <span className="font-semibold text-slate-800 dark:text-slate-200">{formatCurrency(calculation.customsAgencyAndWarehouseBob, 'BOB')}</span>
+                  </div>
+
+                  <div className="flex justify-between py-1.5 font-bold text-sm text-slate-900 dark:text-white pt-2">
+                    <span>Costo Total Nacionalizado (CIF + Tributos):</span>
+                    <span className="text-emerald-600 dark:text-emerald-400">
+                      {formatCurrency(calculation.totalNationalizedCostBob, 'BOB')}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">IVA Importación (14.94% efectivo sobre CIF+GA):</span>
-                  <span className="font-semibold text-white">{formatCurrency(calculation.ivaAmountBob, 'BOB')}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Gastos de Almacén y Despacho:</span>
-                  <span className="font-semibold text-white">{formatCurrency(calculation.customsAgencyAndWarehouseBob, 'BOB')}</span>
-                </div>
-                <div className="flex justify-between pt-3 border-t border-slate-800 text-base font-bold">
-                  <span className="text-slate-200">Costo Mercancía Nacionalizada:</span>
-                  <span className="text-emerald-400">{formatCurrency(calculation.totalNationalizedCostBob, 'BOB')}</span>
-                </div>
+
               </div>
+            ) : null}
+          </div>
 
-              <div className="p-3 bg-slate-900/80 rounded-xl border border-slate-800 text-xs text-slate-400 space-y-1">
-                <div className="flex items-center gap-1.5 text-slate-300 font-semibold">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Transparencia fiscal boliviana:</span>
-                </div>
-                <p>
-                  El IVA pagado en aduana (14.94% efectivo) genera <strong>Crédito Fiscal IVA</strong> que el comerciante puede compensar mensualmente contra el Débito Fiscal de sus ventas en el Formulario 200 del SIN.
-                </p>
-              </div>
-
-            </div>
-          )}
+          <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400">
+            Nota de formalización: El IVA pagado en aduana (14,94% efectivo) genera Crédito Fiscal IVA computable íntegramente en su declaración mensual (Formulario 200).
+          </div>
 
         </div>
 

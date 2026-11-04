@@ -28,6 +28,51 @@ La diferencia entre ambos se conoce como margen cambiario o *spread*.
     ]
   },
   {
+    id: 'guia-abrir-casa-cambio-bolivia',
+    slug: 'requisitos-abrir-casa-de-cambio-asfi-bolivia',
+    title: '¿Cómo abrir y registrar legalmente una Casa de Cambio en Bolivia? Requisitos ASFI y UIF',
+    category: 'Normativa',
+    readingTimeMinutes: 7,
+    summary: 'Guía paso a paso sobre el marco regulatorio para constituir una casa de cambio autorizada por ASFI, medidas de seguridad física exigidas y registro ante la UIF.',
+    sourceReference: 'Autoridad de Supervisión del Sistema Financiero (ASFI) - Recopilación de Normas para Servicios Financieros (Título II, Capítulo III) y Ley Nº 393.',
+    content: `
+### 1. Marco Legal e Instituciones Competentes
+En Bolivia, la actividad cambiaria profesional no puede ejercerse de manera informal sin autorización previa del Estado. Las instituciones que norman y fiscalizan este rubro son:
+- **ASFI (Autoridad de Supervisión del Sistema Financiero):** Otorga la Licencia de Funcionamiento y fiscaliza la idoneidad financiera y legal.
+- **UIF (Unidad de Investigaciones Financieras):** Supervisa el cumplimiento de la normativa antilavado y prevención del financiamiento del terrorismo (LGI/FT).
+- **Servicio de Impuestos Nacionales (SIN):** Emisión de NIT en el Régimen General para facturación comercial.
+- **Gobierno Autónomo Municipal:** Emisión de Licencia de Funcionamiento de local comercial.
+
+### 2. Forma Jurídica y Constitución
+Para operar formalmente, debe constituirse como persona jurídica bajo una de las siguientes figuras comerciales:
+- **Sociedad de Responsabilidad Limitada (S.R.L.)** o **Sociedad Anónima (S.A.)**.
+- El objeto social debe ser exclusivo para la **compra y venta de moneda extranjera y cheques de viajero**.
+- Capital mínimo social pagado en moneda nacional (acreditado en cuenta bancaria y certificado por balance de apertura auditado).
+
+### 3. Exigencias de Infraestructura y Seguridad Física
+Por normativa expresa de la ASFI, el local físico debe cumplir estándares de alta seguridad:
+1. **Ventanillas de atención:** Vidrio blindado de alta resistencia con bandeja pasadocumentos/pasadinero.
+2. **Caja Fuerte / Bóveda:** Anclada a la estructura física del inmueble con cerradura de combinación o retardo.
+3. **Circuito Cerrado de Televisión (CCTV):** Cámaras con grabación continua de alta definición y respaldo de video por mínimo 90 días naturales, enfocando ventanillas, ingresos y caja.
+4. **Alarma silenciosa y sonora:** Monitoreada y conectada con la central de la Policía Boliviana o empresa de seguridad acreditada.
+
+### 4. Oficial de Cumplimiento y Prevención (UIF)
+Toda casa de cambio es Sujeto Obligado ante la UIF:
+- Debe designar un **Oficial de Cumplimiento** registrado ante la UIF.
+- Implementar la política "Conozca a su Cliente" (KYC): solicitar cédula de identidad en operaciones que superen los umbrales normativos fijados por ley.
+- Llevar registro cronológico inalterable de cada compra y venta de divisa.
+
+### 5. Obligaciones en la Operación Diaria
+- **Pizarra física visible:** Exhibir a la entrada o sobre ventanilla las tasas de compra y venta del día para cada divisa con tipografía clara y sin enmiendas.
+- **Comprobante cambiario:** Emitir a cada cliente un recibo o comprobante formal donde conste la fecha, tipo de cambio pactado, monto entregado y monto recibido.
+    `,
+    keyTakeaways: [
+      'Es ilegal operar una casa de cambio sin Licencia de Funcionamiento emitida por ASFI.',
+      'El local exige infraestructura blindada, CCTV de 90 días y alarma policial.',
+      'Debe reportarse periódicamente ante la UIF cumpliendo protocolos de prevención de lavado.'
+    ]
+  },
+  {
     id: 'guia-margen-vs-markup',
     slug: 'margen-bruto-vs-recargo-markup',
     title: 'Margen Bruto vs. Recargo (Markup): El error contable que quiebra negocios',
