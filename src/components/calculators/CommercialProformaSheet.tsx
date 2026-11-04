@@ -9,6 +9,8 @@ export const CommercialProformaSheet: React.FC = () => {
   const [unitCost, setUnitCost] = useState<number>(85.50);
   const [unitSellingPrice, setUnitSellingPrice] = useState<number>(130.00);
   const [clientName, setClientName] = useState<string>('Cliente Mayorista / Distribución');
+  // Número estable durante la sesión: no debe cambiar en cada re-render.
+  const [proformaNumber] = useState<number>(() => Math.floor(1000 + Math.random() * 9000));
 
   const totalCost = quantity * unitCost;
   const totalRevenue = quantity * unitSellingPrice;
@@ -127,7 +129,7 @@ export const CommercialProformaSheet: React.FC = () => {
 
           <div className="text-right">
             <span className="text-xs uppercase font-bold text-slate-500 tracking-wider">Documento Referencial</span>
-            <div className="text-lg font-black text-slate-900 mt-0.5">PROFORMA #{Math.floor(1000 + Math.random() * 9000)}</div>
+            <div className="text-lg font-black text-slate-900 mt-0.5">PROFORMA #{proformaNumber}</div>
             <span className="text-[10px] text-slate-500">Emitido vía Cambio Bolivia</span>
           </div>
         </div>
@@ -187,7 +189,7 @@ export const CommercialProformaSheet: React.FC = () => {
 
           <div className="bg-slate-100 p-4 rounded-xl space-y-2 text-right">
             <div className="text-xs text-slate-600">Total Inversión de Costo: {formatCurrency(totalCost, 'BOB')}</div>
-            <div className="text-sm font-semibold text-slate-700">Total Proforma Facturación:</div>
+            <div className="text-sm font-semibold text-slate-700">Total Proforma:</div>
             <div className="text-3xl font-black text-slate-900">{formatCurrency(totalRevenue, 'BOB')}</div>
           </div>
 
@@ -195,7 +197,7 @@ export const CommercialProformaSheet: React.FC = () => {
 
         {/* Descargo y Validez */}
         <div className="mt-8 pt-4 border-t border-slate-200 text-[10px] text-slate-500 flex justify-between items-center">
-          <span>Esta liquidación comercial fue calculada mediante la plataforma Cambio Bolivia (cambiobolivia.pages.dev).</span>
+          <span>Documento referencial generado con Cambio Bolivia. No es una factura ni un documento fiscal.</span>
           <span>Vigencia referencial: 15 días calendario</span>
         </div>
 

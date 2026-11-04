@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { ArrowLeftRight, Copy, Check, Clock, Info, ShieldCheck } from 'lucide-react';
 import { CurrencyCode } from '../../types';
-import { RATES_MAP, OFFICIAL_RATES } from '../../data/officialRates';
+import { RATES_MAP, OFFICIAL_RATES, getOfficialRate } from '../../data/officialRates';
 import { convertAmount, formatCurrency, roundCurrency } from '../../utils/financialMath';
 import { getRateStaleness, formatDate } from '../../utils/dateFormatting';
 
@@ -40,15 +40,12 @@ export const CurrencyConverter: React.FC = () => {
   }, [amount, fromCurrency, toCurrency]);
 
   const activeRateMeta = useMemo(() => {
-    const pair = OFFICIAL_RATES.find(
-      r => (r.baseCurrency === fromCurrency && r.targetCurrency === toCurrency) ||
-           (r.baseCurrency === toCurrency && r.targetCurrency === fromCurrency)
-    ) || OFFICIAL_RATES[0];
-    return pair;
+    const currency = fromCurrency === 'BOB' ? toCurrency : fromCurrency;
+    return getOfficialRate(currency) || getOfficialRate('USD') || OFFICIAL_RATES[0];
   }, [fromCurrency, toCurrency]);
 
   const staleness = useMemo(() => {
-    return getRateStaleness(activeRateMeta.effectiveDate);
+    return getRateStaleness(activeRateMeta.publishedOn);
   }, [activeRateMeta]);
 
   const handleCopy = () => {
@@ -65,17 +62,17 @@ export const CurrencyConverter: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-            Conversor de Divisas Oficial y Comercial
+            Conversor con Tipo de Cambio Oficial (BCB)
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Cálculos transparentes con cotizaciones del Banco Central de Bolivia y entidades reguladas.
+            Cálculo transparente con la tabla diaria del Banco Central de Bolivia y su fecha de publicación.
           </p>
         </div>
 
         {/* Badge de Antigüedad y Trazabilidad */}
         <div className={`px-3 py-1.5 rounded-full border text-xs font-medium flex items-center gap-1.5 self-start sm:self-auto ${staleness.badgeClass}`}>
           <Clock className="w-3.5 h-3.5" />
-          <span>{staleness.label} ({formatDate(activeRateMeta.effectiveDate)})</span>
+          <span>{staleness.label} ({formatDate(activeRateMeta.publishedOn)})</span>
         </div>
       </div>
 
@@ -190,7 +187,10 @@ export const CurrencyConverter: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-slate-200 dark:border-slate-800/50 text-slate-500">
           <div className="flex items-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-            <span>Fuente: <strong className="text-slate-700 dark:text-slate-300">{activeRateMeta.sourceName}</strong></span>
+            <span>
+              Fuente: <strong className="text-slate-700 dark:text-slate-300">{activeRateMeta.sourceName}</strong>
+              {activeRateMeta.sourceTable ? ` — ${activeRateMeta.sourceTable}` : ''}
+            </span>
           </div>
           <a
             href={activeRateMeta.sourceUrl}
@@ -198,9 +198,15 @@ export const CurrencyConverter: React.FC = () => {
             rel="noopener noreferrer"
             className="text-emerald-600 dark:text-emerald-400 hover:underline font-medium"
           >
-            Comprobar fuente oficial ↗
+            Ver tabla del BCB ↗
           </a>
         </div>
+
+        {staleness.status !== 'fresh' && (
+          <p className="pt-2 border-t border-slate-200 dark:border-slate-800/50 text-amber-700 dark:text-amber-400">
+            {staleness.description}
+          </p>
+        )}
       </div>
 
     </div>

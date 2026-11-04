@@ -59,7 +59,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onTabChange, theme, o
                   Cambio Bolivia
                 </span>
                 <span className="hidden sm:inline text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">
-                  Oficial &amp; Comercial
+                  TCO BCB
                 </span>
               </div>
               <p className="text-xs text-slate-400 hidden sm:block">Plataforma Financiera y Económica Independiente</p>

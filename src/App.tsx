@@ -4,7 +4,6 @@ import { Footer } from './components/layout/Footer';
 import { DisclaimerBanner } from './components/layout/DisclaimerBanner';
 import { CurrencyConverter } from './components/currency/CurrencyConverter';
 import { RatesOverview } from './components/currency/RatesOverview';
-import { HistoricalRatesChart } from './components/currency/HistoricalRatesChart';
 import { RateComparisonTable } from './components/currency/RateComparisonTable';
 import { CommunityRatesPanel } from './components/currency/CommunityRatesPanel';
 import { CommercialCostCalculator } from './components/calculators/CommercialCostCalculator';
@@ -90,14 +89,15 @@ export function App() {
             <div className="text-center max-w-3xl mx-auto space-y-4">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-800 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
                 <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Datos Oficiales Contrastados · Plataforma 100% gratuita</span>
+                <span>Fuente citada y fecha visible · Uso gratuito</span>
               </div>
               <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
                 Cotizaciones y Divisas{' '}
                 <span className="text-emerald-600 dark:text-emerald-400">en Bolivia</span>
               </h1>
               <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 max-w-xl mx-auto">
-                Consulte tipos de cambio oficiales del Banco Central de Bolivia, referencias comerciales y realice conversiones bidireccionales con precisión matemática garantizada.
+                Consulta el Tipo de Cambio Oficial del Banco Central de Bolivia, con su fecha de publicación,
+                y convierte entre monedas viendo siempre qué tasa se aplicó.
               </p>
             </div>
 
@@ -106,9 +106,6 @@ export function App() {
 
             {/* Pizarra General de Cotizaciones */}
             <RatesOverview />
-
-            {/* Gráfico de Evolución Reciente */}
-            <HistoricalRatesChart />
 
             {/* Tabla Comparativa de Cotizaciones y Spread */}
             <RateComparisonTable />

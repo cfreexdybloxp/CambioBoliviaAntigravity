@@ -3,7 +3,7 @@ import { CurrencyCode, CommunityRateReport } from '../../types';
 import { 
   getStoredReports, 
   submitCommunityReport, 
-  moderateStoredReport 
+  clearStoredReports 
 } from '../../utils/communityReports';
 import { 
   Users, 
@@ -11,21 +11,21 @@ import {
   CheckCircle, 
   Clock, 
   AlertTriangle,
-  XCircle 
+  Info,
+  Trash2
 } from 'lucide-react';
 import { formatDate } from '../../utils/dateFormatting';
 
 export const CommunityRatesPanel: React.FC = () => {
   const [reports, setReports] = useState<CommunityRateReport[]>([]);
   const [showForm, setShowForm] = useState<boolean>(false);
-  const [showAdminModeration, setShowAdminModeration] = useState<boolean>(false);
 
   // Estados del formulario
   const [establishmentName, setEstablishmentName] = useState<string>('');
-  const [city, setCity] = useState<string>('La Paz');
+  const [city, setCity] = useState<string>('');
   const [currency, setCurrency] = useState<CurrencyCode>('USD');
-  const [buyRate, setBuyRate] = useState<string>('12.08');
-  const [sellRate, setSellRate] = useState<string>('12.15');
+  const [buyRate, setBuyRate] = useState<string>('');
+  const [sellRate, setSellRate] = useState<string>('');
   const [declaredSource, setDeclaredSource] = useState<CommunityRateReport['declaredSource']>('Ventanilla física / Pizarra');
   const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -52,9 +52,11 @@ export const CommunityRatesPanel: React.FC = () => {
     if (result.success) {
       setFeedbackMessage({
         type: 'success',
-        text: 'Reporte enviado con éxito. Ha quedado registrado como PENDIENTE DE REVISIÓN para evitar datos erróneos.'
+        text: 'Borrador guardado solo en este navegador. No se envió a ningún servidor ni fue verificado.'
       });
       setEstablishmentName('');
+      setBuyRate('');
+      setSellRate('');
       setReports(getStoredReports());
       setTimeout(() => setShowForm(false), 2500);
     } else {
@@ -65,9 +67,9 @@ export const CommunityRatesPanel: React.FC = () => {
     }
   };
 
-  const handleModerate = (id: string, newStatus: CommunityRateReport['status'], reason?: string) => {
-    moderateStoredReport(id, newStatus, reason);
-    setReports(getStoredReports());
+  const handleClear = () => {
+    clearStoredReports();
+    setReports([]);
   };
 
   return (
@@ -78,10 +80,10 @@ export const CommunityRatesPanel: React.FC = () => {
         <div>
           <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
             <Users className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-            Reportes Colaborativos de la Comunidad y Moderación
+            Cuaderno local de cotizaciones observadas
           </h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Transparencia con control de calidad: los reportes ciudadanos pasan por filtro de validación antes de considerarse referencia comprobada.
+            Herramienta privada para anotar lo que ves en ventanilla. Los datos se guardan solo en tu navegador: no se publican, no se comparten y no se verifican.
           </p>
         </div>
 
@@ -91,7 +93,7 @@ export const CommunityRatesPanel: React.FC = () => {
             className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-md"
           >
             <Send className="w-3.5 h-3.5" />
-            <span>{showForm ? 'Cerrar Formulario' : 'Reportar Cotización'}</span>
+            <span>{showForm ? 'Cerrar Formulario' : 'Anotar Cotización'}</span>
           </button>
         </div>
       </div>
@@ -99,7 +101,7 @@ export const CommunityRatesPanel: React.FC = () => {
       {/* Formulario de Envío de Reporte */}
       {showForm && (
         <form onSubmit={handleSubmit} className="bg-slate-50 dark:bg-slate-950/80 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4 animate-fadeIn">
-          <h4 className="text-sm font-bold text-slate-900 dark:text-white">Nuevo Reporte de Cotización en Ventanilla</h4>
+          <h4 className="text-sm font-bold text-slate-900 dark:text-white">Nueva Cotización Observada en Ventanilla</h4>
 
           {feedbackMessage && (
             <div className={`p-3 rounded-xl text-xs flex items-center gap-2 ${
@@ -196,8 +198,7 @@ export const CommunityRatesPanel: React.FC = () => {
               type="submit"
               className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-colors shadow-sm"
             >
-              Enviar para Moderación
-            </button>
+              Guardar Borrador            </button>
           </div>
         </form>
       )}
@@ -205,21 +206,29 @@ export const CommunityRatesPanel: React.FC = () => {
       {/* Listado de Reportes Recientes */}
       <div className="space-y-3">
         <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-          <span>Últimas cotizaciones reportadas por usuarios en territorio nacional:</span>
-          <button
-            onClick={() => setShowAdminModeration(!showAdminModeration)}
-            className="text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 underline"
-          >
-            {showAdminModeration ? 'Ocultar Panel de Moderación' : 'Modo Moderador'}
-          </button>
+          <span>Tus anotaciones guardadas en este navegador:</span>
+          {reports.length > 0 && (
+            <button
+              onClick={handleClear}
+              className="text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 underline inline-flex items-center gap-1"
+            >
+              <Trash2 className="w-3 h-3" /> Borrar todo
+            </button>
+          )}
         </div>
+
+        {reports.length === 0 && (
+          <div className="bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl p-5 text-xs text-slate-500 dark:text-slate-400 flex items-start gap-2">
+            <Info className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
+            <p>
+              Aún no hay anotaciones. Si guardas una, quedará únicamente en este dispositivo y desaparecerá
+              si borras los datos del navegador.
+            </p>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {reports.map((report) => {
-            const isVerified = report.status === 'VERIFICADO_PUBLICADO';
-            const isPending = report.status === 'PENDIENTE_REVISION';
-            const isRejected = report.status === 'RECHAZADO';
-
             return (
               <div
                 key={report.id}
@@ -231,21 +240,9 @@ export const CommunityRatesPanel: React.FC = () => {
                     <span className="text-slate-500 dark:text-slate-400">{report.city}</span>
                   </div>
 
-                  {isVerified && (
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 flex items-center gap-1">
-                      <CheckCircle className="w-3 h-3" /> Verificado
-                    </span>
-                  )}
-                  {isPending && (
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> Pendiente de Revisión
-                    </span>
-                  )}
-                  {isRejected && (
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-800 flex items-center gap-1">
-                      <XCircle className="w-3 h-3" /> Desestimado
-                    </span>
-                  )}
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700 flex items-center gap-1">
+                    <Clock className="w-3 h-3" /> Sin verificar
+                  </span>
                 </div>
 
                 <div className="flex gap-4 bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800/80">
@@ -268,24 +265,6 @@ export const CommunityRatesPanel: React.FC = () => {
                   <p className="text-[10px] text-slate-500 dark:text-slate-400 italic">
                     Nota: {report.notes}
                   </p>
-                )}
-
-                {/* Acciones de Moderación Administrativa Local */}
-                {showAdminModeration && (
-                  <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex gap-2">
-                    <button
-                      onClick={() => handleModerate(report.id, 'VERIFICADO_PUBLICADO')}
-                      className="px-2 py-1 rounded bg-emerald-100 dark:bg-emerald-900/60 hover:bg-emerald-200 dark:hover:bg-emerald-800 text-emerald-800 dark:text-emerald-300 text-[10px] font-medium"
-                    >
-                      Aprobar (Verificado)
-                    </button>
-                    <button
-                      onClick={() => handleModerate(report.id, 'RECHAZADO', 'Datos no coincidentes con pizarra ASFI')}
-                      className="px-2 py-1 rounded bg-rose-100 dark:bg-rose-900/60 hover:bg-rose-200 dark:hover:bg-rose-800 text-rose-800 dark:text-rose-300 text-[10px] font-medium"
-                    >
-                      Rechazar
-                    </button>
-                  </div>
                 )}
 
               </div>

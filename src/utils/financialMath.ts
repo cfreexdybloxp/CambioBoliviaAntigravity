@@ -64,8 +64,8 @@ export function convertAmount(
     };
   }
 
-  // Si convertimos de moneda extranjera a BOB: la entidad nos compra la divisa (buyRate)
-  // Ej: 100 USD * 12.12 = 1.212 BOB
+  // Conversión de moneda extranjera a BOB con el TCO oficial (valor único)
+  // Ej: 100 USD * 12,11 = 1.211 BOB
   if (toCurrency === 'BOB' && fromCurrency in rates) {
     const rate = rates[fromCurrency].buyRate;
     const result = roundCurrency(amount * rate, 2);
@@ -76,8 +76,9 @@ export function convertAmount(
     };
   }
 
-  // Si convertimos de BOB a moneda extranjera: la entidad nos vende la divisa (sellRate)
-  // Ej: 1.212 BOB / 12.12 = 100 USD
+  // Conversión de BOB a moneda extranjera: con el TCO único se usa el mismo valor.
+  // Se mantiene `sellRate` por compatibilidad con la interfaz de tasas.
+  // Ej: 1.211 BOB / 12,11 = 100 USD
   if (fromCurrency === 'BOB' && toCurrency in rates) {
     const rate = rates[toCurrency].sellRate;
     if (rate <= 0) throw new Error('Tasa de cambio inválida o cero');
@@ -91,8 +92,8 @@ export function convertAmount(
 
   // Cruce de monedas extranjeras triangulando a través de BOB (Pivote boliviano)
   if (fromCurrency in rates && toCurrency in rates) {
-    const fromRate = rates[fromCurrency].buyRate; // Convertir origen a BOB
-    const toRate = rates[toCurrency].sellRate;    // Convertir BOB a destino
+    const fromRate = rates[fromCurrency].buyRate; // TCO de la moneda de origen
+    const toRate = rates[toCurrency].sellRate;    // TCO de la moneda de destino
     const inBob = amount * fromRate;
     const result = roundCurrency(inBob / toRate, 2);
     const effectiveCrossRate = roundCurrency(fromRate / toRate, 4);
@@ -100,7 +101,7 @@ export function convertAmount(
     return {
       result,
       rateApplied: effectiveCrossRate,
-      calculationExplanation: `${amount} ${fromCurrency} convertidos a ${roundCurrency(inBob, 2)} Bs (tasa compra ${fromRate}), luego convertidos a ${toCurrency} (tasa venta ${toRate})`
+      calculationExplanation: `${amount} ${fromCurrency} convertidos a ${roundCurrency(inBob, 2)} Bs (TCO ${fromRate}), luego convertidos a ${toCurrency} (TCO ${toRate})`
     };
   }
 

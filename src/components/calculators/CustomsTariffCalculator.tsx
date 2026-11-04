@@ -4,6 +4,7 @@ import {
   calculateBolivianCustoms 
 } from '../../utils/customsTariff';
 import { formatCurrency } from '../../utils/financialMath';
+import { RATES_MAP } from '../../data/officialRates';
 import { 
   Scale, 
   AlertTriangle, 
@@ -12,7 +13,7 @@ import {
 
 export const CustomsTariffCalculator: React.FC = () => {
   const [cifValueUsd, setCifValueUsd] = useState<number>(2000);
-  const [exchangeRate, setExchangeRate] = useState<number>(12.12); // TCO Oficial
+  const [exchangeRate, setExchangeRate] = useState<number>(RATES_MAP.USD.sellRate); // TCO BCB
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>(BOLIVIAN_TARIFF_CATEGORIES[3].id); // Confección nueva
   const [agencyFeesBob, setAgencyFeesBob] = useState<number>(450); // Despacho y almacén
 
@@ -73,7 +74,7 @@ export const CustomsTariffCalculator: React.FC = () => {
                 type="number"
                 step="any"
                 value={exchangeRate}
-                onChange={(e) => setExchangeRate(parseFloat(e.target.value) || 12.12)}
+                onChange={(e) => setExchangeRate(parseFloat(e.target.value) || RATES_MAP.USD.sellRate)}
                 className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-slate-200 font-semibold text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
               <span className="text-[10px] text-slate-500 mt-1 block">
@@ -121,6 +122,13 @@ export const CustomsTariffCalculator: React.FC = () => {
               </div>
             </div>
           )}
+
+          <div className="p-3 bg-amber-950/20 border border-amber-900/50 rounded-xl text-[11px] text-amber-200/90 leading-relaxed">
+            <strong>Estimación, no liquidación oficial.</strong> Las categorías de esta calculadora son
+            agrupaciones didácticas, no la clasificación arancelaria de 8 dígitos. El Gravamen Arancelario real
+            depende de la subpartida del producto en el Arancel Aduanero de Importación. Confirma la
+            clasificación con la Aduana Nacional o un despachante antes de importar.
+          </div>
 
           <div>
             <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">

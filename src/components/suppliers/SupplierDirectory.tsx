@@ -9,7 +9,10 @@ import {
   PlusCircle, 
   X, 
   Check, 
-  Building2 
+  Building2,
+  Clock,
+  Info,
+  ExternalLink
 } from 'lucide-react';
 
 export const SupplierDirectory: React.FC = () => {
@@ -64,9 +67,9 @@ export const SupplierDirectory: React.FC = () => {
       priceRange,
       phone,
       nitOrRegistry,
-      isLegalAndCompliant: true,
-      verificationSource: 'Declaración Jurada Formal (En proceso de auditoría SEPREC)',
-      verifiedDate: new Date().toISOString().split('T')[0]
+      verification: 'NO_VERIFICADO',
+      verificationSource: 'Declaración del propio proveedor. No comprobada por Cambio Bolivia.',
+      verifiedDate: ''
     };
 
     setCustomSuppliers(prev => [newSupplier, ...prev]);
@@ -90,7 +93,7 @@ export const SupplierDirectory: React.FC = () => {
             Directorio Comercial de Proveedores Formales y Precios Mayoristas
           </h2>
           <p className="text-sm text-slate-400 mt-1">
-            Proveedores verificados con registro comercial en Bolivia para comercio lícito y formal.
+            Solo publicamos proveedores cuya existencia podamos comprobar. Mientras no haya registros contrastados, el directorio permanece vacío a propósito.
           </p>
         </div>
 
@@ -112,11 +115,23 @@ export const SupplierDirectory: React.FC = () => {
               Aviso Normativo Aduanero Obligatorio — Decreto Supremo Nº 28761
             </h4>
             <p className="leading-relaxed">
-              En Bolivia, la importación y comercialización de <strong>prendería usada (ropa usada)</strong> está <strong>terminantemente prohibida</strong> por ley. La Aduana Nacional decomisa e inutiliza cualquier lote ilícito considerándolo contrabando con sanción penal.
+              En Bolivia, la importación de <strong>prendería usada (ropa usada)</strong> está prohibida desde el
+              21/04/2007 y su comercialización desde el 01/03/2008 (Decreto Supremo Nº 28761, Artículo 3). La
+              Aduana Nacional puede decomisar la mercancía y el caso puede constituir delito aduanero.
             </p>
             <p className="leading-relaxed text-amber-300/90 font-medium">
-              Por principios éticos y legales, <strong>Cambio Bolivia NO lista, NO promueve ni facilita</strong> contactos de ropa usada. Priorizamos exclusivamente confección textil boliviana nueva, calzado nacional e importación formal regulada.
+              Por principios éticos y legales, <strong>Cambio Bolivia NO lista, NO promueve ni facilita</strong> contactos
+              de ropa usada. Priorizamos confección textil boliviana nueva, calzado nacional e importación formal regulada.
             </p>
+            <a
+              href="https://www.lexivox.org/norms/BO-DS-28761.xhtml"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-[11px] text-amber-300 hover:text-amber-200 underline"
+            >
+              Leer el texto del DS 28761
+              <ExternalLink className="w-3 h-3" />
+            </a>
           </div>
         </div>
       </div>
@@ -139,8 +154,36 @@ export const SupplierDirectory: React.FC = () => {
       </div>
 
       {/* Grid de Proveedores */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {filteredSuppliers.map((supplier) => (
+      {filteredSuppliers.length === 0 ? (
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 sm:p-10 space-y-3">
+          <div className="flex items-start gap-3">
+            <Info className="w-6 h-6 text-emerald-400 shrink-0 mt-0.5" />
+            <div className="space-y-2">
+              <h3 className="text-base font-bold text-white">
+                {allSuppliers.length === 0
+                  ? 'Directorio vacío: no tenemos proveedores contrastados'
+                  : 'Ningún proveedor coincide con esta categoría'}
+              </h3>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                No listamos empresas con NIT, teléfonos o precios que no podamos comprobar. Si registras tu
+                empresa, la ficha se guarda <strong className="text-slate-200">solo en tu navegador</strong> y
+                aparece marcada como «sin verificar».
+              </p>
+            </div>
+          </div>
+          <a
+            href="https://www.seprec.gob.bo/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs text-emerald-400 hover:text-emerald-300 font-medium"
+          >
+            Consultar el registro de comercio en SEPREC
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {filteredSuppliers.map((supplier) => (
           <div
             key={supplier.id}
             className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm hover:border-slate-700 transition-all flex flex-col justify-between"
@@ -151,7 +194,11 @@ export const SupplierDirectory: React.FC = () => {
                   {supplier.category}
                 </span>
                 <span className="text-[10px] text-slate-400 bg-slate-950 border border-slate-800 px-2 py-0.5 rounded flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Formal
+                  {supplier.verification === 'VERIFICADO_FUENTE' ? (
+                    <><CheckCircle2 className="w-3 h-3 text-emerald-400" /> Verificado</>
+                  ) : (
+                    <><Clock className="w-3 h-3 text-amber-400" /> Sin verificar</>
+                  )}
                 </span>
               </div>
 
@@ -189,14 +236,15 @@ export const SupplierDirectory: React.FC = () => {
               </div>
             </div>
 
-            <div className="mt-5 pt-3 border-t border-slate-800/80 text-[10px] text-slate-500 flex justify-between items-center">
-              <span>Fuente: {supplier.verificationSource}</span>
-              <span>Auditado: {supplier.verifiedDate}</span>
+            <div className="mt-5 pt-3 border-t border-slate-800/80 text-[10px] text-slate-500 flex justify-between items-start gap-3">
+              <span className="flex-1">Fuente: {supplier.verificationSource}</span>
+              <span>{supplier.verifiedDate ? `Verificado: ${supplier.verifiedDate}` : 'Sin verificar'}</span>
             </div>
 
           </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Modal de Registro de Proveedor Formal */}
       {showRegisterModal && (
@@ -221,7 +269,7 @@ export const SupplierDirectory: React.FC = () => {
               {formSuccess && (
                 <div className="p-3 bg-emerald-950/60 border border-emerald-800 text-emerald-300 rounded-xl flex items-center gap-2">
                   <Check className="w-4 h-4 shrink-0" />
-                  <span>Registro recibido exitosamente. Se ha incorporado a su sesión para verificación.</span>
+                  <span>Borrador guardado en este navegador. No se publicó ni se verificó: no aparece en el directorio de otros usuarios.</span>
                 </div>
               )}
 

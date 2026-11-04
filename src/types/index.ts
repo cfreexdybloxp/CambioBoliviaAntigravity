@@ -5,18 +5,32 @@ export type RateType =
   | 'REFERENCIAL_COMERCIAL'   // Casas de cambio autorizadas / entidades financieras
   | 'PARALELO_INFORMATIVO';   // Referencia de mercado no regulado (con advertencia de volatilidad)
 
+/**
+ * Nivel de comprobación de un dato. No son equivalentes:
+ * - VERIFICADO_FUENTE: el valor se leyó de la fuente citada en la fecha indicada.
+ * - NO_VERIFICADO: no consta una fuente comprobable. No debe presentarse como oficial.
+ * - DEMO: dato de ejemplo para probar la interfaz. No sirve para operar.
+ */
+export type VerificationLevel = 'VERIFICADO_FUENTE' | 'NO_VERIFICADO' | 'DEMO';
+
 export interface ExchangeRate {
   id: string;
   baseCurrency: CurrencyCode;
   targetCurrency: CurrencyCode;
-  buyRate: number;            // Precio al que la entidad compra la divisa
-  sellRate: number;           // Precio al que la entidad vende la divisa
+  /**
+   * El BCB publica un único Tipo de Cambio Oficial (TCO) por jornada, no un par
+   * compra/venta. Para las cotizaciones oficiales ambos campos son iguales y
+   * solo existen por compatibilidad con la interfaz del conversor.
+   */
+  buyRate: number;
+  sellRate: number;
   type: RateType;
   sourceName: string;
   sourceUrl: string;
-  effectiveDate: string;      // YYYY-MM-DD
-  retrievedAt: string;        // ISO timestamp
-  isVerified: boolean;
+  sourceTable?: string;       // Identificación de la tabla/boletín de la fuente
+  publishedOn: string;        // YYYY-MM-DD que declara la fuente
+  retrievedOn: string;        // YYYY-MM-DD en que se consultó la fuente
+  verification: VerificationLevel;
   notes?: string;
 }
 
@@ -32,7 +46,7 @@ export interface ExchangeHouse {
   lng: number;
   phone?: string;
   schedule: string;
-  isVerified: boolean;
+  verification: VerificationLevel;
   publishedRates: {
     usdBuy?: number;
     usdSell?: number;
@@ -107,7 +121,8 @@ export interface Supplier {
   priceRange: string;
   phone: string;
   nitOrRegistry: string;
-  isLegalAndCompliant: boolean; // Cumple estrictamente con normativas (DS 28761)
+  /** Cumple estrictamente con normativas (DS 28761) — solo si fue comprobado. */
+  verification: VerificationLevel;
   verificationSource: string;
   verifiedDate: string;
 }

@@ -8,11 +8,11 @@ export const EducationalGuides: React.FC = () => {
   const glossaryItems = [
     {
       term: 'UFV (Unidad de Fomento de Vivienda)',
-      definition: 'Unidad de cuenta referencial calculada diariamente por el BCB según la inflación (IPC). Utilizada en contratos de vivienda, actualización de tributos y créditos a largo plazo.'
+      definition: 'Unidad de cuenta cuyo valor publica el BCB a diario en su Tabla de Cotizaciones. Se usa en contratos de vivienda, actualización de tributos y créditos a largo plazo. Para indexar necesita la UFV de la fecha inicial y la de la fecha final.'
     },
     {
       term: 'TCO (Tipo de Cambio Oficial)',
-      definition: 'Cotización legal fijada por el Banco Central de Bolivia. Obligatoria para balances contables, recaudación fiscal y declaraciones juradas aduaneras.'
+      definition: 'Cotización que publica a diario el Banco Central de Bolivia, con un solo valor por moneda (sin compra/venta). Sirve de referencia en registros contables, obligaciones tributarias y operaciones aduaneras.'
     },
     {
       term: 'Spread Cambiario (Diferencial)',
@@ -24,11 +24,11 @@ export const EducationalGuides: React.FC = () => {
     },
     {
       term: 'Decreto Supremo Nº 28761',
-      definition: 'Decreto de 2006 que prohíbe de forma terminante la importación y comercialización de ropa usada en Bolivia para salvaguardar la industria textil y la salud pública.'
+      definition: 'Norma del 21 de junio de 2006. Su Artículo 3 prohíbe la importación de prendería usada desde el 21/04/2007 y su comercialización desde el 01/03/2008.'
     },
     {
       term: 'Subasta Ecológica Aduanera',
-      definition: 'Procedimiento legal mediante el cual la ropa usada decomisada por contrabando se inutiliza y tritura para ser vendida únicamente como relleno de colchones o aislantes.'
+      definition: 'Procedimiento de la Aduana Nacional para inutilizar o destruir mercancía decomisada que no puede volver al comercio, como la prendería usada.'
     }
   ];
 

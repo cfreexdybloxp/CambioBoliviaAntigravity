@@ -55,7 +55,7 @@ export const BOLIVIAN_TARIFF_CATEGORIES: TariffCategory[] = [
     name: 'Ropa Usada / Prendería de Segunda Mano (PROHIBIDO)',
     gaRatePercentage: 0,
     isProhibited: true,
-    legalNote: 'PROHIBICIÓN TERMINANTE según Decreto Supremo Nº 28761 y Ley General de Aduanas Nº 1990. Mercancía ilícita sujeta a decomiso inmediato y proceso penal por contrabando.',
+    legalNote: 'Prohibición de importación desde el 21/04/2007 y de comercialización desde el 01/03/2008 (Decreto Supremo Nº 28761, Art. 3; Ley Nº 1990 de Aduanas). No existe tributo que legalice la internación.',
     typicalItems: 'Fardos de ropa usada, calzado usado, retazos viejos.'
   }
 ];
@@ -91,7 +91,7 @@ export function calculateBolivianCustoms(
       totalTaxesAndDutiesBob: 0,
       totalNationalizedCostBob: 0,
       isProhibited: true,
-      prohibitionMessage: 'OPERACIÓN PROHIBIDA: El Decreto Supremo Nº 28761 prohíbe de forma definitiva la importación y comercialización de prendería usada. No existe tributo aduanero aplicable para legalizar esta mercancía. Su internación constituye delito aduanero de contrabando.'
+      prohibitionMessage: 'Operación prohibida: el Decreto Supremo Nº 28761 (Art. 3) prohíbe la importación de prendería usada desde el 21/04/2007 y su comercialización desde el 01/03/2008. No hay tributo aduanero que permita legalizar esta mercancía.'
     };
   }
 

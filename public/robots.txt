@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /admin/
 
-Sitemap: https://cambiobolivia.pages.dev/sitemap.xml
+# No se declara un sitemap hasta que el sitio tenga un dominio publicado.
+# Cuando exista, añadir aquí: Sitemap: https://<dominio>/sitemap.xml

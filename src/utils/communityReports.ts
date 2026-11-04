@@ -3,43 +3,28 @@ import { CommunityRateReport, CurrencyCode } from '../types';
 const STORAGE_KEY = 'cambio_bolivia_community_reports';
 const LAST_SUBMIT_KEY = 'cambio_bolivia_last_submit_ts';
 
-export const INITIAL_COMMUNITY_REPORTS: CommunityRateReport[] = [
-  {
-    id: 'rep-001',
-    establishmentName: 'Pizarra Casa de Cambio Colón',
-    city: 'La Paz (Centro)',
-    currency: 'USD',
-    buyRate: 12.08,
-    sellRate: 12.14,
-    declaredSource: 'Ventanilla física / Pizarra',
-    reportedAt: new Date(Date.now() - 3600000 * 4).toISOString(),
-    status: 'VERIFICADO_PUBLICADO',
-    notes: 'Contrastado telefónicamente con la entidad.'
-  },
-  {
-    id: 'rep-002',
-    establishmentName: 'Librecambio Av. Mutualista',
-    city: 'Santa Cruz',
-    currency: 'USD',
-    buyRate: 12.15,
-    sellRate: 12.25,
-    declaredSource: 'Consulta telefónica',
-    reportedAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-    status: 'PENDIENTE_REVISION',
-    notes: 'Pendiente de comprobación física. Cotización informal.'
-  }
-];
+/**
+ * Reportes comunitarios.
+ *
+ * Limitación importante y deliberada: esta versión guarda los reportes
+ * únicamente en `localStorage`. No se envían a ningún servidor, no se
+ * comparten entre usuarios y nadie los modera. Por eso la interfaz debe
+ * presentarlos como "borradores locales", nunca como cotizaciones verificadas
+ * ni como una muestra de lo que reporta la comunidad.
+ *
+ * No se incluyen reportes de ejemplo: inventar cotizaciones para aparentar
+ * actividad es exactamente lo que este proyecto debe evitar.
+ */
+export const INITIAL_COMMUNITY_REPORTS: CommunityRateReport[] = [];
 
 export function getStoredReports(): CommunityRateReport[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_COMMUNITY_REPORTS));
-      return INITIAL_COMMUNITY_REPORTS;
-    }
-    return JSON.parse(raw);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
-    return INITIAL_COMMUNITY_REPORTS;
+    return [];
   }
 }
 
@@ -58,7 +43,7 @@ export function validateReportInput(data: {
     return { isValid: false, error: 'Especifique la ciudad y zona de la cotización.' };
   }
 
-  if (data.buyRate <= 0 || data.sellRate <= 0) {
+  if (!Number.isFinite(data.buyRate) || !Number.isFinite(data.sellRate) || data.buyRate <= 0 || data.sellRate <= 0) {
     return { isValid: false, error: 'Las cotizaciones deben ser valores numéricos positivos mayores a cero.' };
   }
 
@@ -128,7 +113,7 @@ export function submitCommunityReport(reportData: Omit<CommunityRateReport, 'id'
     id: `rep-${Date.now()}`,
     reportedAt: new Date().toISOString(),
     status: 'PENDIENTE_REVISION',
-    notes: 'Enviado por la comunidad; no representa un dato oficial verificado hasta su moderación.'
+    notes: 'Borrador guardado solo en este navegador. No fue enviado, publicado ni verificado por nadie.'
   };
 
   try {
@@ -142,19 +127,11 @@ export function submitCommunityReport(reportData: Omit<CommunityRateReport, 'id'
   }
 }
 
-export function moderateStoredReport(id: string, newStatus: CommunityRateReport['status'], reason?: string): boolean {
+export function clearStoredReports(): void {
   try {
-    const reports = getStoredReports();
-    const index = reports.findIndex(r => r.id === id);
-    if (index === -1) return false;
-
-    reports[index].status = newStatus;
-    if (reason) {
-      reports[index].rejectionReason = reason;
-    }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(reports));
-    return true;
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(LAST_SUBMIT_KEY);
   } catch {
-    return false;
+    // localStorage no disponible
   }
 }

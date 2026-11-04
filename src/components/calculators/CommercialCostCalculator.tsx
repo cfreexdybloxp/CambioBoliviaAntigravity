@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { CurrencyCode } from '../../types';
 import { calculateImportCost, formatCurrency } from '../../utils/financialMath';
+import { RATES_MAP } from '../../data/officialRates';
 import { ArrowRight } from 'lucide-react';
 
 interface CommercialCostCalculatorProps {
@@ -11,7 +12,7 @@ export const CommercialCostCalculator: React.FC<CommercialCostCalculatorProps> =
   const [purchasePrice, setPurchasePrice] = useState<number>(15);
   const [quantity, setQuantity] = useState<number>(100);
   const [currency, setCurrency] = useState<CurrencyCode>('USD');
-  const [exchangeRate, setExchangeRate] = useState<number>(12.12);
+  const [exchangeRate, setExchangeRate] = useState<number>(RATES_MAP.USD.sellRate);
   const [freightCost, setFreightCost] = useState<number>(800);
   const [packagingCost, setPackagingCost] = useState<number>(200);
   const [customsTaxes, setCustomsTaxes] = useState<number>(1500);
@@ -98,9 +99,7 @@ export const CommercialCostCalculator: React.FC<CommercialCostCalculatorProps> =
                   const curr = e.target.value as CurrencyCode;
                   setCurrency(curr);
                   if (curr === 'BOB') setExchangeRate(1);
-                  else if (curr === 'USD') setExchangeRate(12.12);
-                  else if (curr === 'PEN') setExchangeRate(3.28);
-                  else if (curr === 'EUR') setExchangeRate(13.05);
+                  else setExchangeRate(RATES_MAP[curr].sellRate);
                 }}
                 className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               >

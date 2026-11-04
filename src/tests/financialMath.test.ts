@@ -33,20 +33,19 @@ describe('Motor Matemático Financiero — Cambio Bolivia', () => {
   });
 
   describe('convertAmount (Conversor de Divisas)', () => {
-    it('debe convertir BOB a USD correctamente dividiendo entre sellRate', () => {
-      // Si la tasa de venta del USD es 12.12 Bs por USD
-      // 1212 Bs / 12.12 = 100 USD
-      const result = convertAmount(1212, 'BOB', 'USD', RATES_MAP);
+    it('debe convertir BOB a USD correctamente dividiendo entre el TCO oficial', () => {
+      // TCO del USD publicado por el BCB (30/10/2026): 12,11 Bs por USD
+      // 1211 Bs / 12,11 = 100 USD
+      const result = convertAmount(1211, 'BOB', 'USD', RATES_MAP);
       expect(result.result).toBe(100);
-      expect(result.rateApplied).toBe(12.12);
+      expect(result.rateApplied).toBe(12.11);
     });
 
-    it('debe convertir USD a BOB multiplicando por buyRate', () => {
-      // Si la tasa de compra del USD es 12.00 Bs por USD
-      // 50 USD * 12.00 = 600 Bs
+    it('debe convertir USD a BOB multiplicando por el TCO oficial', () => {
+      // 50 USD * 12,11 Bs = 605,50 Bs
       const result = convertAmount(50, 'USD', 'BOB', RATES_MAP);
-      expect(result.result).toBe(600);
-      expect(result.rateApplied).toBe(12.00);
+      expect(result.result).toBe(605.5);
+      expect(result.rateApplied).toBe(12.11);
     });
 
     it('debe manejar conversión de misma moneda (BOB a BOB)', () => {

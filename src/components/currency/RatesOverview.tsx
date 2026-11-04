@@ -1,32 +1,33 @@
 import React from 'react';
-import { OFFICIAL_RATES } from '../../data/officialRates';
-import { ExternalLink } from 'lucide-react';
+import { OFFICIAL_RATES, RATES_SNAPSHOT } from '../../data/officialRates';
+import { ExternalLink, Info } from 'lucide-react';
 import { getRateStaleness, formatDate } from '../../utils/dateFormatting';
 
 export const RatesOverview: React.FC = () => {
   return (
     <div className="space-y-6">
-      
+
       {/* Título de Sección */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-            Pizarra de Cotizaciones Oficiales y Comerciales
+          <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+            Tipo de Cambio Oficial del BCB
           </h3>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            Valores de referencia publicados por el Banco Central de Bolivia y entidades supervisadas.
+            Valores de la {RATES_SNAPSHOT.tableId}, publicada el {formatDate(RATES_SNAPSHOT.publishedOn)}.
           </p>
         </div>
         <div className="text-xs text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-lg self-start sm:self-auto shadow-sm">
-          Perspectiva institucional: <strong>Compra</strong> (te compran) | <strong>Venta</strong> (te venden)
+          El BCB publica un <strong>TCO único</strong> por jornada: no hay compra/venta oficial.
         </div>
       </div>
 
       {/* Grid de Tarjetas de Cotizaciones */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {OFFICIAL_RATES.map((rate) => {
-          const staleness = getRateStaleness(rate.effectiveDate);
-          const spread = (rate.sellRate - rate.buyRate).toFixed(4);
+          const staleness = getRateStaleness(rate.publishedOn);
+          const decimals = rate.baseCurrency === 'ARS' || rate.baseCurrency === 'CLP' ? 5 : 2;
+          const hasSpread = rate.buyRate !== rate.sellRate;
 
           return (
             <div
@@ -41,13 +42,12 @@ export const RatesOverview: React.FC = () => {
                       {rate.baseCurrency} / {rate.targetCurrency}
                     </span>
                     <h4 className="text-sm font-bold text-slate-900 dark:text-white mt-1.5">
-                      {rate.baseCurrency === 'USD' && rate.type === 'OFICIAL_BCB' && 'Dólar Oficial (BCB)'}
-                      {rate.baseCurrency === 'USD' && rate.type === 'REFERENCIAL_COMERCIAL' && 'Dólar Casas de Cambio'}
-                      {rate.baseCurrency === 'EUR' && 'Euro Oficial'}
-                      {rate.baseCurrency === 'PEN' && 'Sol Peruano'}
-                      {rate.baseCurrency === 'BRL' && 'Real Brasileño'}
-                      {rate.baseCurrency === 'ARS' && 'Peso Argentino'}
-                      {rate.baseCurrency === 'CLP' && 'Peso Chileno'}
+                      {rate.baseCurrency === 'USD' && 'Dólar estadounidense'}
+                      {rate.baseCurrency === 'EUR' && 'Euro'}
+                      {rate.baseCurrency === 'PEN' && 'Sol peruano'}
+                      {rate.baseCurrency === 'BRL' && 'Real brasileño'}
+                      {rate.baseCurrency === 'ARS' && 'Peso argentino'}
+                      {rate.baseCurrency === 'CLP' && 'Peso chileno'}
                       {rate.baseCurrency === 'UFV' && 'Unidad de Fomento (UFV)'}
                     </h4>
                   </div>
@@ -57,45 +57,50 @@ export const RatesOverview: React.FC = () => {
                   </span>
                 </div>
 
-                {/* Precios de Compra y Venta */}
-                <div className="grid grid-cols-2 gap-2 my-4 bg-slate-50 dark:bg-slate-950/70 p-3 rounded-lg border border-slate-200 dark:border-slate-800/80">
-                  <div>
-                    <span className="block text-[11px] font-medium text-slate-500 dark:text-slate-400">Compra (Bs)</span>
-                    <span className="text-lg font-bold text-slate-800 dark:text-slate-200">
-                      {rate.buyRate.toFixed(rate.baseCurrency === 'ARS' || rate.baseCurrency === 'CLP' ? 4 : 2)}
-                    </span>
-                  </div>
-                  <div className="border-l border-slate-200 dark:border-slate-800 pl-3">
-                    <span className="block text-[11px] font-medium text-slate-500 dark:text-slate-400">Venta (Bs)</span>
-                    <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
-                      {rate.sellRate.toFixed(rate.baseCurrency === 'ARS' || rate.baseCurrency === 'CLP' ? 4 : 2)}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Brecha / Spread y Notas */}
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 space-y-1 mb-4">
-                  {rate.baseCurrency !== 'UFV' && (
-                    <div className="flex justify-between">
-                      <span>Diferencial (Spread):</span>
-                      <span className="text-slate-700 dark:text-slate-300 font-medium">Bs {spread}</span>
+                {/* Valor oficial (TCO único) */}
+                <div className="my-4 bg-slate-50 dark:bg-slate-950/70 p-3 rounded-lg border border-slate-200 dark:border-slate-800/80">
+                  {hasSpread ? (
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <span className="block text-[11px] font-medium text-slate-500 dark:text-slate-400">Compra (Bs)</span>
+                        <span className="text-lg font-bold text-slate-800 dark:text-slate-200">
+                          {rate.buyRate.toFixed(decimals)}
+                        </span>
+                      </div>
+                      <div className="border-l border-slate-200 dark:border-slate-800 pl-3">
+                        <span className="block text-[11px] font-medium text-slate-500 dark:text-slate-400">Venta (Bs)</span>
+                        <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
+                          {rate.sellRate.toFixed(decimals)}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <span className="block text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                        {rate.baseCurrency === 'UFV' ? 'Valor de la UFV (Bs)' : 'TCO (Bs por unidad)'}
+                      </span>
+                      <span className="text-2xl font-bold text-slate-900 dark:text-white">
+                        {rate.sellRate.toFixed(decimals)}
+                      </span>
                     </div>
                   )}
-                  <p className="text-slate-500 line-clamp-2 text-[11px] italic">
-                    {rate.notes}
-                  </p>
                 </div>
+
+                {/* Nota de la fuente */}
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                  {rate.notes}
+                </p>
               </div>
 
               {/* Pie de la tarjeta: Fuente y Fecha */}
               <div className="pt-3 border-t border-slate-100 dark:border-slate-800/70 text-[11px] text-slate-400 dark:text-slate-500 flex items-center justify-between">
-                <span>Vigencia: {formatDate(rate.effectiveDate)}</span>
+                <span>Publicado: {formatDate(rate.publishedOn)}</span>
                 <a
                   href={rate.sourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 dark:hover:text-emerald-300 inline-flex items-center gap-0.5 font-medium"
-                  title="Consultar fuente original"
+                  title="Consultar la tabla original del BCB"
                 >
                   Fuente <ExternalLink className="w-2.5 h-2.5" />
                 </a>
@@ -104,6 +109,19 @@ export const RatesOverview: React.FC = () => {
             </div>
           );
         })}
+      </div>
+
+      {/* Aclaración metodológica */}
+      <div className="p-4 bg-slate-50 dark:bg-slate-950/70 rounded-xl border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 flex items-start gap-2.5">
+        <Info className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+        <p className="leading-relaxed">
+          <strong className="text-slate-800 dark:text-slate-200">Cómo leer esta pizarra:</strong> estos valores son
+          una copia de la tabla diaria del BCB consultada el {formatDate(RATES_SNAPSHOT.retrievedOn)}. No se
+          actualizan solos: si la fecha de publicación no es reciente, el dato está desactualizado y debe
+          confirmarse en <a href={RATES_SNAPSHOT.humanUrl} target="_blank" rel="noopener noreferrer" className="text-emerald-600 dark:text-emerald-400 hover:underline">bcb.gob.bo</a>.
+          Desde diciembre de 2025 el BCB unificó el mercado cambiario, por lo que la referencia oficial y la de
+          ventanilla no deben presentarse como dos mercados separados sin una fuente que lo demuestre.
+        </p>
       </div>
 
     </div>

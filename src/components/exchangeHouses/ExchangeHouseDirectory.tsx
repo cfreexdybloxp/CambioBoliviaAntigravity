@@ -17,7 +17,7 @@ export const ExchangeHouseDirectory: React.FC = () => {
   const [selectedHouseId, setSelectedHouseId] = useState<string | undefined>(EXCHANGE_HOUSES[0]?.id);
   const [viewMode, setViewMode] = useState<'both' | 'list' | 'map'>('both');
 
-  const departments = ['Todos', 'La Paz', 'Santa Cruz', 'Cochabamba', 'Oruro', 'Tarija'];
+  const departments = ['Todos', ...Array.from(new Set(EXCHANGE_HOUSES.map(h => h.department)))];
 
   const filteredHouses = useMemo(() => {
     return EXCHANGE_HOUSES.filter((house) => {
@@ -41,7 +41,7 @@ export const ExchangeHouseDirectory: React.FC = () => {
             Directorio de Casas de Cambio Autorizadas
           </h2>
           <p className="text-sm text-slate-400 mt-1">
-            Establecimientos supervisados por la Autoridad de Supervisión del Sistema Financiero (ASFI).
+            Solo establecimientos que podamos contrastar con el registro público de ASFI. Cada ficha indica su fuente y fecha de verificación.
           </p>
         </div>
 
@@ -59,6 +59,53 @@ export const ExchangeHouseDirectory: React.FC = () => {
         </div>
       </div>
 
+      {/* Estado vacío: directorio sin registros contrastados */}
+      {EXCHANGE_HOUSES.length === 0 && (
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 sm:p-10 space-y-4">
+          <div className="flex items-start gap-3">
+            <ShieldCheck className="w-6 h-6 text-emerald-400 shrink-0 mt-0.5" />
+            <div className="space-y-2">
+              <h3 className="text-base font-bold text-white">
+                Todavía no publicamos fichas: no tenemos datos contrastados
+              </h3>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                Preferimos un directorio vacío a uno con direcciones, licencias o precios que no podamos
+                respaldar. Para cada establecimiento exigimos que figure en el registro de entidades
+                supervisadas por ASFI y citamos la fuente con su fecha de consulta.
+              </p>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                ASFI tampoco publica, hasta donde pudimos comprobar, una fuente automatizable con las
+                pizarras de compra y venta de cada casa de cambio. Por eso aquí no verás cotizaciones de
+                ventanilla presentadas como si fueran en tiempo real.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-3 pt-2">
+            <a
+              href="https://www.asfi.gob.bo/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition-colors"
+            >
+              Consultar entidades supervisadas en ASFI
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+            <a
+              href="https://www.bcb.gob.bo/?q=cotizaciones_tc"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors"
+            >
+              Ver tabla de cotizaciones del BCB
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        </div>
+      )}
+
+      {EXCHANGE_HOUSES.length > 0 && (
+        <>
       {/* Barra de Filtros y Búsqueda */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
         
@@ -135,7 +182,7 @@ export const ExchangeHouseDirectory: React.FC = () => {
             
             {filteredHouses.length === 0 ? (
               <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center text-slate-400 text-sm">
-                No se encontraron establecimientos autorizados que coincidan con la búsqueda.
+                Ningún establecimiento coincide con el filtro. Prueba con otro departamento o limpia la búsqueda.
               </div>
             ) : (
               filteredHouses.map((house) => {
@@ -213,7 +260,9 @@ export const ExchangeHouseDirectory: React.FC = () => {
                       </a>
 
                       <span className="text-[10px] text-slate-500">
-                        Verificado: {formatDate(house.lastVerifiedDate)}
+                        {house.verification === 'VERIFICADO_FUENTE'
+                          ? `Verificado: ${formatDate(house.lastVerifiedDate)}`
+                          : 'Sin verificar'}
                       </span>
                     </div>
 
@@ -226,6 +275,8 @@ export const ExchangeHouseDirectory: React.FC = () => {
         )}
 
       </div>
+        </>
+      )}
 
     </div>
   );

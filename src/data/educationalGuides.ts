@@ -11,7 +11,7 @@ export const EDUCATIONAL_GUIDES: EducationalGuide[] = [
     sourceReference: 'Banco Central de Bolivia (Ley 1670) y ASFI (Recopilación de Normas para Servicios Financieros).',
     content: `
 ### 1. El Tipo de Cambio Oficial (TCO)
-En Bolivia, el Banco Central de Bolivia (BCB) fija y publica el Tipo de Cambio Oficial. Esta tasa es la referencia legal obligatoria para la contabilidad pública, la liquidación de tributos ante el Servicio de Impuestos Nacionales (SIN), las operaciones aduaneras y los balances bancarios.
+El Banco Central de Bolivia (BCB) publica a diario el Tipo de Cambio Oficial en su Tabla de Cotizaciones. Es la referencia que se usa en registros contables, obligaciones tributarias ante el Servicio de Impuestos Nacionales (SIN), operaciones aduaneras y balances. El BCB publica **una sola cotización por moneda**, no un par de compra y venta.
 
 ### 2. Cotización Comercial en Casas de Cambio
 Las casas de cambio autorizadas por la ASFI operan con pizarras de compra y venta. La ASFI exige que estas pizarras estén colocadas de forma visible al público. El precio de venta (lo que el cliente paga para obtener divisas) suele incluir los costos operativos de intermediación, transporte físico de billetes y custodia de valores.
@@ -68,7 +68,7 @@ $$\\text{Precio} = \\frac{\\text{Costo}}{1 - 0,30} = \\frac{100}{0,70} = 142,86\
     sourceReference: 'Decreto Supremo Nº 28761 (2006) y Ley General de Aduanas Nº 1990.',
     content: `
 ### El Marco Legal en Bolivia
-El **Decreto Supremo Nº 28761** estableció la prohibición definitiva de la importación y comercialización de prendería usada, ropa vieja, trapos, desperdicios textiles y calzado usado.
+El **Decreto Supremo Nº 28761**, del 21 de junio de 2006, fijó el fin de la importación de prendería usada: el Artículo 3 prohíbe su importación **a partir del 21 de abril de 2007** y su comercialización **a partir del 1 de marzo de 2008**, de forma indefectible. También prohíbe la importación y comercialización de prendería vieja, desechos, desperdicios, ropa íntima, de cama y de tocador.
 
 ### Razones de la Prohibición:
 1. **Salud Pública:** La falta de trazabilidad sanitaria y riesgo epidemiológico (hongos, dermatitis, plagas).
