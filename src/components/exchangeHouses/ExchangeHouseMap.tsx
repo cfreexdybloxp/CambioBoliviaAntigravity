@@ -107,7 +107,7 @@ export const ExchangeHouseMap: React.FC<ExchangeHouseMapProps> = ({
     <div className="relative w-full h-[450px] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-xl transition-colors">
       <div ref={mapContainerRef} className="w-full h-full" />
       <div className="absolute bottom-2 left-2 z-[400] bg-white/95 dark:bg-slate-900/90 backdrop-blur px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-800 text-[10px] text-slate-600 dark:text-slate-400 shadow-sm">
-        Cartografía comunitaria libre © OpenStreetMap (0 Bs)
+        Cartografía comunitaria libre © OpenStreetMap
       </div>
     </div>
   );

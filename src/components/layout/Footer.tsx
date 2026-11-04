@@ -25,7 +25,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenLegalModal }) => {
               Plataforma independiente dedicada a la transparencia cambiaria, formalización del comercio y educación financiera en Bolivia.
             </p>
             <div className="pt-2 text-xs text-slate-400 dark:text-slate-500">
-              Operación con costo cero (0 Bs). Los datos se muestran con su fuente y su fecha.
+              Datos contrastados con fuentes oficiales públicas, sin fines de lucro y de libre acceso ciudadano.
             </div>
           </div>
 
@@ -61,7 +61,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenLegalModal }) => {
               Marco Legal Boliviano
             </h4>
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-              En cumplimiento del <strong className="text-slate-700 dark:text-slate-200">Decreto Supremo Nº 28761</strong> (Art. 3) y la <strong className="text-slate-700 dark:text-slate-200">Ley Nº 1990</strong>, la importación de prendería usada está prohibida desde el 21/04/2007 y su comercialización desde el 01/03/2008. Este portal no incluye ni asesora sobre esa mercancía.
+              En estricto cumplimiento del <strong className="text-slate-700 dark:text-slate-200">Decreto Supremo Nº 28761</strong> y la <strong className="text-slate-700 dark:text-slate-200">Ley Nº 1990</strong>, este portal promueve el comercio legal y no incluye ni asesora sobre internación de prendería usada (mercancía prohibida).
             </p>
             {onOpenLegalModal && (
               <button
