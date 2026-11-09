@@ -3,6 +3,7 @@ import { Navbar, TabType } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { DisclaimerBanner } from './components/layout/DisclaimerBanner';
 import { CurrencyConverter } from './components/currency/CurrencyConverter';
+import { MobileRateHero } from './components/currency/MobileRateHero';
 import { RatesOverview } from './components/currency/RatesOverview';
 import { RateComparisonTable } from './components/currency/RateComparisonTable';
 import { CommunityRatesPanel } from './components/currency/CommunityRatesPanel';
@@ -79,14 +80,17 @@ export function App() {
       />
 
       {/* Contenido Principal */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12 pb-28 md:pb-12 space-y-8 sm:space-y-12">
 
         {/* ── PESTAÑA: DIVISAS Y CONVERSOR ── */}
         {activeTab === 'divisas' && (
-          <div className="space-y-12 animate-fadeIn">
+          <div className="space-y-8 sm:space-y-12 animate-fadeIn">
 
-            {/* Hero */}
-            <div className="text-center max-w-3xl mx-auto space-y-4">
+            {/* Tarjeta Fintech Hero Especial para Android / Móvil */}
+            <MobileRateHero />
+
+            {/* Hero Desktop */}
+            <div className="hidden md:block text-center max-w-3xl mx-auto space-y-4">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-800 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>Fuente citada y fecha visible · Uso gratuito</span>

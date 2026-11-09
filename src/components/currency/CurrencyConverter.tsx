@@ -89,7 +89,7 @@ export const CurrencyConverter: React.FC = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl shadow-slate-200/50 dark:shadow-none max-w-4xl mx-auto transition-colors duration-200">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 sm:p-8 shadow-xl shadow-slate-200/40 dark:shadow-none max-w-4xl mx-auto transition-colors duration-200">
       
       {/* Encabezado del Conversor */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
@@ -129,14 +129,14 @@ export const CurrencyConverter: React.FC = () => {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-lg font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300/80 dark:border-slate-700 rounded-2xl px-4 py-3.5 text-2xl font-black text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all shadow-inner"
             />
           </div>
 
           <select
             value={fromCurrency}
             onChange={(e) => setFromCurrency(e.target.value as CurrencyCode)}
-            className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300/80 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
           >
             {currencies.map((c) => (
               <option key={c.code} value={c.code}>
@@ -146,11 +146,11 @@ export const CurrencyConverter: React.FC = () => {
           </select>
         </div>
 
-        {/* Botón de Intercambio (Swap) */}
+        {/* Botón de Intercambio (Swap) con microinteracción táctil */}
         <div className="lg:col-span-1 flex justify-center py-2 lg:py-0">
           <button
             onClick={handleSwap}
-            className="p-3 rounded-full bg-slate-100 hover:bg-emerald-600 dark:bg-slate-800 dark:hover:bg-emerald-600 text-slate-700 hover:text-white dark:text-slate-300 dark:hover:text-white border border-slate-300 dark:border-slate-700 transition-all shadow-md group"
+            className="p-3.5 rounded-2xl bg-emerald-50 hover:bg-emerald-600 dark:bg-slate-800 dark:hover:bg-emerald-600 text-emerald-700 hover:text-white dark:text-emerald-400 dark:hover:text-white border border-emerald-200 dark:border-slate-700 active:scale-90 active:rotate-180 transition-all duration-300 shadow-md group"
             title="Invertir monedas"
             aria-label="Invertir monedas"
           >
@@ -160,16 +160,16 @@ export const CurrencyConverter: React.FC = () => {
 
         {/* Moneda de Destino y Resultado */}
         <div className="lg:col-span-3 space-y-2">
-          <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+          <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
             Moneda Recibida
           </label>
-          <div className="bg-emerald-50/60 dark:bg-slate-950/80 border border-emerald-300 dark:border-emerald-900/50 rounded-xl px-4 py-3 flex items-center justify-between">
-            <span className="text-xl sm:text-2xl font-bold text-emerald-700 dark:text-emerald-400 tracking-tight">
+          <div className="bg-emerald-50/70 dark:bg-slate-950/80 border border-emerald-300/80 dark:border-emerald-900/50 rounded-2xl px-4 py-3 flex items-center justify-between">
+            <span className="text-2xl sm:text-3xl font-black text-emerald-700 dark:text-emerald-400 tracking-tight truncate">
               {formatCurrency(conversionResult.result, toCurrency)}
             </span>
             <button
               onClick={handleCopy}
-              className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-800 active:scale-90 transition-all shrink-0 ml-2"
               title="Copiar resultado"
             >
               {copied ? <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-4 h-4" />}
@@ -179,7 +179,7 @@ export const CurrencyConverter: React.FC = () => {
           <select
             value={toCurrency}
             onChange={(e) => setToCurrency(e.target.value as CurrencyCode)}
-            className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300/80 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
           >
             {currencies.map((c) => (
               <option key={c.code} value={c.code}>
@@ -193,15 +193,15 @@ export const CurrencyConverter: React.FC = () => {
 
       {/* Botones de Montos Rápidos */}
       <div className="flex flex-wrap items-center gap-2 pt-2 pb-4">
-        <span className="text-xs text-slate-400 dark:text-slate-500 mr-2">Montos rápidos:</span>
+        <span className="text-xs font-medium text-slate-400 dark:text-slate-500 mr-1 hidden sm:inline">Montos rápidos:</span>
         {[10, 50, 100, 500, 1000].map((val) => (
           <button
             key={val}
             onClick={() => setAmount(val.toString())}
-            className={`text-xs px-2.5 py-1 rounded-md border transition-colors ${
+            className={`text-xs px-3 py-1.5 rounded-xl font-bold transition-all active:scale-95 border ${
               amount === val.toString()
-                ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm'
-                : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                ? 'bg-emerald-600 text-white border-emerald-500 shadow-md shadow-emerald-600/20'
+                : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700/80'
             }`}
           >
             {val} {fromCurrency}
