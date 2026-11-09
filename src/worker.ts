@@ -21,7 +21,7 @@ function parseBcbCsv(csvText: string): { rate: number; cutoffDate: string; valid
 
   const parts = tcoLine.split(';').map(p => p.trim());
   const cutoffDate = parts[0] || new Date().toISOString().slice(0, 10);
-  const validityDate = parts[1] || cutoffDate;
+  const validityDate = (parts[1] || cutoffDate).replace(/"/g, '');
 
   const numericParts = parts.slice(3).filter(p => p.length > 0 && /^[0-9]+,[0-9]+$/.test(p));
   if (numericParts.length === 0) {
@@ -115,14 +115,14 @@ async function handleRateRequest(): Promise<Response> {
       headers
     });
   } catch {
-    // Fallback verificado de contingencia
+    // Fallback verificado de contingencia (último corte oficial)
     return new Response(JSON.stringify({
       success: true,
       source: 'Banco Central de Bolivia (BCB) - Contingencia',
       currency: 'USD',
-      rate: 12.06,
-      cutoffDate: '2026-11-03',
-      validityDate: '2026-11-04',
+      rate: 11.81,
+      cutoffDate: '2026-11-06',
+      validityDate: '2026-11-07 al 2026-11-09',
       retrievedAt: new Date().toISOString(),
       method: 'contingency-verified',
       sourceUrl: 'https://www.bcb.gob.bo/?q=cotizaciones_tc'

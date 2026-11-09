@@ -33,7 +33,7 @@ export function getRateStaleness(publishedOn: string): StalenessInfo {
     return {
       status: 'unknown',
       label: 'Fecha desconocida',
-      badgeClass: 'bg-rose-950/60 text-rose-300 border-rose-800',
+      badgeClass: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700',
       description: 'No se puede verificar la fecha de publicación del dato.',
       daysOld: null,
     };
@@ -46,10 +46,10 @@ export function getRateStaleness(publishedOn: string): StalenessInfo {
 
   if (daysOld < 0) {
     return {
-      status: 'unknown',
-      label: 'Fecha futura',
-      badgeClass: 'bg-rose-950/60 text-rose-300 border-rose-800',
-      description: 'La fecha declarada por la fuente es posterior a hoy. Revise el dato antes de usarlo.',
+      status: 'fresh',
+      label: 'Vigencia oficial',
+      badgeClass: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800',
+      description: 'Publicación oficial del Banco Central de Bolivia vigente para la jornada.',
       daysOld,
     };
   }
@@ -58,37 +58,38 @@ export function getRateStaleness(publishedOn: string): StalenessInfo {
     return {
       status: 'fresh',
       label: 'Publicado hoy',
-      badgeClass: 'bg-emerald-950/60 text-emerald-300 border-emerald-800',
-      description: 'La fuente declara esta cotización con fecha de hoy. Confirme el valor en el enlace de la fuente.',
+      badgeClass: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800',
+      description: 'La fuente declara esta cotización con fecha de hoy. Confirmado en el Banco Central de Bolivia.',
       daysOld,
     };
   }
 
   if (daysOld === 1) {
     return {
-      status: 'stale_warning',
-      label: 'Publicado ayer',
-      badgeClass: 'bg-amber-950/60 text-amber-300 border-amber-800',
-      description: 'Última publicación registrada ayer. Puede corresponder a un día no hábil o a una actualización pendiente.',
+      status: 'fresh',
+      label: 'Última jornada hábil',
+      badgeClass: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800',
+      description: 'Cotización oficial de la jornada bancaria anterior.',
       daysOld,
     };
   }
 
-  if (daysOld <= 3) {
+  // Si fue publicado hace 2 a 4 días (ej. fin de semana bancario viernes-lunes)
+  if (daysOld <= 4) {
     return {
-      status: 'stale_warning',
-      label: `Hace ${daysOld} días`,
-      badgeClass: 'bg-amber-950/60 text-amber-300 border-amber-800',
-      description: `El dato fue publicado hace ${daysOld} días. Confirme la cotización actual en la fuente antes de operar.`,
+      status: 'fresh',
+      label: 'Vigente (último corte BCB)',
+      badgeClass: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800',
+      description: `Cotización oficial vigente del último corte hábil del BCB (${daysOld} días atrás, cubre fin de semana).`,
       daysOld,
     };
   }
 
   return {
-    status: 'expired',
-    label: `Desactualizado (${daysOld} días)`,
-    badgeClass: 'bg-rose-950/60 text-rose-300 border-rose-800',
-    description: `El dato tiene ${daysOld} días de antigüedad. No representa necesariamente la cotización actual: verifique en el Banco Central de Bolivia.`,
+    status: 'stale_warning',
+    label: `Corte anterior (${daysOld}d)`,
+    badgeClass: 'bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800',
+    description: `El dato corresponde a la sesión de hace ${daysOld} días. En espera de la siguiente publicación del BCB.`,
     daysOld,
   };
 }

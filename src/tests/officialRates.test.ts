@@ -54,10 +54,10 @@ describe('Tipos de cambio oficiales del BCB', () => {
     expect(RATES_SNAPSHOT.institution).toContain('Banco Central de Bolivia');
   });
 
-  it('debe conservar los valores publicados el 03/11/2026', () => {
+  it('debe conservar los valores publicados el 06/11/2026', () => {
     // Si se actualiza el snapshot, actualizar también estas expectativas
     // junto con `publishedOn` y `retrievedOn`.
-    expect(getOfficialRate('USD')?.sellRate).toBe(12.06);
+    expect(getOfficialRate('USD')?.sellRate).toBe(11.81);
     expect(getOfficialRate('EUR')?.sellRate).toBe(13.12);
     expect(getOfficialRate('PEN')?.sellRate).toBe(3.22);
     expect(getOfficialRate('BRL')?.sellRate).toBe(2.12);

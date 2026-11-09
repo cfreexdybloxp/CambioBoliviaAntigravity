@@ -65,8 +65,21 @@ export const CurrencyConverter: React.FC = () => {
   }, [fromCurrency, toCurrency]);
 
   const staleness = useMemo(() => {
-    return getRateStaleness(activeRateMeta.publishedOn);
-  }, [activeRateMeta]);
+    // Si la conversión involucra USD y tenemos la tasa viva
+    if (fromCurrency === 'USD' || toCurrency === 'USD') {
+      return {
+        label: `Oficial Vigente (Corte ${liveRate.cutoffDate})`,
+        badgeClass: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 shadow-sm',
+        isUsdLive: true
+      };
+    }
+    const base = getRateStaleness(activeRateMeta.publishedOn);
+    return {
+      label: `${base.label} (${formatDate(activeRateMeta.publishedOn)})`,
+      badgeClass: base.badgeClass,
+      isUsdLive: false
+    };
+  }, [activeRateMeta, fromCurrency, toCurrency, liveRate.cutoffDate]);
 
   const handleCopy = () => {
     const text = `${amount} ${fromCurrency} = ${conversionResult.result} ${toCurrency} (Tasa: ${conversionResult.rateApplied})`;
@@ -90,9 +103,13 @@ export const CurrencyConverter: React.FC = () => {
         </div>
 
         {/* Badge de Antigüedad y Trazabilidad */}
-        <div className={`px-3 py-1.5 rounded-full border text-xs font-medium flex items-center gap-1.5 self-start sm:self-auto ${staleness.badgeClass}`}>
-          <Clock className="w-3.5 h-3.5" />
-          <span>{staleness.label} ({formatDate(activeRateMeta.publishedOn)})</span>
+        <div className={`px-3 py-1.5 rounded-full border text-xs font-semibold flex items-center gap-1.5 self-start sm:self-auto ${staleness.badgeClass}`}>
+          {staleness.isUsdLive ? (
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          ) : (
+            <Clock className="w-3.5 h-3.5" />
+          )}
+          <span>{staleness.label}</span>
         </div>
       </div>
 

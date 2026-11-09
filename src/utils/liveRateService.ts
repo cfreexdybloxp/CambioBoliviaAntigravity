@@ -23,11 +23,11 @@ const STORAGE_KEY = 'cambio-bolivia-live-tco';
 const BCB_CSV_URL = 'https://www.bcb.gob.bo/bcb_tco_publico_descargar_csv.php';
 const BROWSER_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
 
-// Tasa base verificada de contingencia
+// Tasa base verificada de contingencia (último corte oficial del BCB)
 export const BASELINE_TCO: LiveRateData = {
-  rate: 12.06,
-  cutoffDate: '2026-11-03',
-  validityDate: '2026-11-04',
+  rate: 11.81,
+  cutoffDate: '2026-11-06',
+  validityDate: '2026-11-07 al 2026-11-09',
   retrievedAt: new Date().toISOString(),
   source: 'Banco Central de Bolivia (BCB)',
   isLive: false,
@@ -44,7 +44,7 @@ function parseBcbCsvClient(csvText: string): { rate: number; cutoffDate: string;
 
   const parts = tcoLine.split(';').map(p => p.trim());
   const cutoffDate = parts[0] || new Date().toISOString().slice(0, 10);
-  const validityDate = parts[1] || cutoffDate;
+  const validityDate = (parts[1] || cutoffDate).replace(/"/g, '');
 
   const numericParts = parts.slice(3).filter(p => p.length > 0 && /^[0-9]+,[0-9]+$/.test(p));
   if (numericParts.length === 0) {

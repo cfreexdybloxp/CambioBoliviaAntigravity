@@ -15,8 +15,8 @@ import { ExchangeRate, CurrencyCode } from '../types';
 export const RATES_SNAPSHOT = {
   institution: 'Banco Central de Bolivia (BCB)',
   tableId: 'Boletín Diario TCO BCB',
-  publishedOn: '2026-11-03',
-  retrievedOn: '2026-11-04',
+  publishedOn: '2026-11-06',
+  retrievedOn: '2026-11-09',
   sourceUrl: 'https://www.bcb.gob.bo/bcb_tco_publico_descargar_csv.php',
   humanUrl: 'https://www.bcb.gob.bo/?q=cotizaciones_tc',
 } as const;
@@ -48,8 +48,8 @@ export const OFFICIAL_RATES: ExchangeRate[] = [
   officialRate(
     'usd-bcb-official',
     'USD',
-    12.06,
-    'Tipo de Cambio Oficial (TCO) del dólar estadounidense publicado por el BCB, en bolivianos por USD.'
+    11.81,
+    'Tipo de Cambio Oficial (TCO) ponderado del dólar estadounidense publicado por el BCB, en bolivianos por USD.'
   ),
   officialRate(
     'eur-bcb-official',
