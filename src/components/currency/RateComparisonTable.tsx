@@ -4,11 +4,14 @@ import { getOfficialRate } from '../../data/officialRates';
 import { EXCHANGE_HOUSES } from '../../data/exchangeHouses';
 import { ArrowUpDown, Info, ExternalLink } from 'lucide-react';
 import { formatDate } from '../../utils/dateFormatting';
+import { useLiveRates } from '../../context/LiveRateContext';
 
 export const RateComparisonTable: React.FC = () => {
+  const { liveRate } = useLiveRates();
   const [selectedCurrency, setSelectedCurrency] = useState<CurrencyCode>('USD');
 
-  const officialRate = getOfficialRate(selectedCurrency);
+  const baseOfficialRate = getOfficialRate(selectedCurrency);
+  const effectiveSellRate = selectedCurrency === 'USD' ? liveRate.rate : (baseOfficialRate?.sellRate || 0);
 
   // Cotizaciones de ventanilla: solo si existen registros con fuente comprobable.
   const rows = EXCHANGE_HOUSES.flatMap(house => {
@@ -35,7 +38,7 @@ export const RateComparisonTable: React.FC = () => {
       buy: pair.buy,
       sell: pair.sell,
       spread,
-      diffFromOfficial: officialRate ? pair.sell - officialRate.sellRate : null,
+      diffFromOfficial: effectiveSellRate > 0 ? pair.sell - effectiveSellRate : null,
       verifiedDate: house.lastVerifiedDate,
     }];
   });
@@ -74,20 +77,32 @@ export const RateComparisonTable: React.FC = () => {
       </div>
 
       {/* Referencia oficial */}
-      {officialRate ? (
+      {baseOfficialRate ? (
         <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
           <div>
-            <span className="font-bold text-emerald-700 dark:text-emerald-400 uppercase text-[10px] tracking-wider block">
-              Tipo de Cambio Oficial (BCB) — {selectedCurrency}/BOB
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-emerald-700 dark:text-emerald-400 uppercase text-[10px] tracking-wider block">
+                Tipo de Cambio Oficial (BCB) — {selectedCurrency}/BOB
+              </span>
+              {selectedCurrency === 'USD' && (
+                <span className="px-1.5 py-0.5 rounded text-[10px] bg-emerald-200 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-300 font-semibold">
+                  En vivo
+                </span>
+              )}
+            </div>
             <span className="text-slate-900 dark:text-white font-semibold text-lg">
-              Bs {officialRate.sellRate.toFixed(selectedCurrency === 'ARS' || selectedCurrency === 'CLP' ? 5 : 2)}
+              Bs {effectiveSellRate.toFixed(selectedCurrency === 'ARS' || selectedCurrency === 'CLP' ? 5 : 2)}
             </span>
           </div>
           <div className="text-slate-600 dark:text-slate-400 space-y-1">
-            <p>Publicado el {formatDate(officialRate.publishedOn)} · {officialRate.sourceTable}</p>
+            <p>
+              {selectedCurrency === 'USD' 
+                ? `Corte oficial BCB: ${liveRate.cutoffDate} (Vigente)` 
+                : `Publicado el ${formatDate(baseOfficialRate.publishedOn)} · ${baseOfficialRate.sourceTable}`
+              }
+            </p>
             <a
-              href={officialRate.sourceUrl}
+              href={baseOfficialRate.sourceUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="text-emerald-700 dark:text-emerald-400 hover:underline inline-flex items-center gap-1 font-medium"

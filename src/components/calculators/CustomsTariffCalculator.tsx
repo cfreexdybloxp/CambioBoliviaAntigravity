@@ -1,21 +1,27 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   BOLIVIAN_TARIFF_CATEGORIES, 
   calculateBolivianCustoms 
 } from '../../utils/customsTariff';
 import { formatCurrency } from '../../utils/financialMath';
-import { RATES_MAP } from '../../data/officialRates';
 import { 
   Scale, 
   AlertTriangle, 
-  ShieldCheck 
+  ShieldCheck,
+  RefreshCw
 } from 'lucide-react';
+import { useLiveRates } from '../../context/LiveRateContext';
 
 export const CustomsTariffCalculator: React.FC = () => {
+  const { liveRate } = useLiveRates();
   const [cifValueUsd, setCifValueUsd] = useState<string>('2000');
-  const [exchangeRate, setExchangeRate] = useState<string>(RATES_MAP.USD.sellRate.toString());
+  const [exchangeRate, setExchangeRate] = useState<string>(() => liveRate.rate.toString());
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>(BOLIVIAN_TARIFF_CATEGORIES[3].id); // Confección nueva
   const [agencyFeesBob, setAgencyFeesBob] = useState<string>('450');
+
+  useEffect(() => {
+    setExchangeRate(liveRate.rate.toString());
+  }, [liveRate.rate]);
 
   const cifBob = useMemo(() => {
     const cifUsd = parseFloat(cifValueUsd);
@@ -78,9 +84,19 @@ export const CustomsTariffCalculator: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                Tipo de Cambio Oficial (Bs/USD)
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                  Tipo de Cambio Oficial (Bs/USD)
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setExchangeRate(liveRate.rate.toString())}
+                  className="text-[10px] text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-semibold"
+                >
+                  <RefreshCw className="w-2.5 h-2.5" />
+                  En vivo: {liveRate.rate.toFixed(2)}
+                </button>
+              </div>
               <input
                 type="number"
                 min="0"

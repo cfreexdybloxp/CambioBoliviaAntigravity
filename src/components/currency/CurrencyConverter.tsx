@@ -1,29 +1,15 @@
 import React, { useState, useMemo } from 'react';
 import { ArrowLeftRight, Copy, Check, Clock, Info, ShieldCheck } from 'lucide-react';
 import { CurrencyCode } from '../../types';
-import { RATES_MAP, OFFICIAL_RATES } from '../../data/officialRates';
+import { OFFICIAL_RATES } from '../../data/officialRates';
 import { convertAmount, formatCurrency, roundCurrency } from '../../utils/financialMath';
 import { getRateStaleness, formatDate } from '../../utils/dateFormatting';
+import { useLiveRates } from '../../context/LiveRateContext';
 
 export const CurrencyConverter: React.FC = () => {
+  const { liveRate, ratesMap } = useLiveRates();
   // Manejamos el monto como string para permitir borrar completamente sin que se pegue un cero
-  const [liveRate, setLiveRate] = React.useState<import('../../utils/liveRateService').LiveRateData | null>(null);
   const [amount, setAmount] = useState<string>('100');
-
-
-  React.useEffect(() => {
-    let cancelled = false;
-    const load = async () => {
-      const data = await import('../../utils/liveRateService').then(m => m.fetchLiveBcbRate());
-      if (!cancelled) setLiveRate(data);
-    };
-    load();
-    const interval = setInterval(load, 60000);
-    return () => {
-      cancelled = true;
-      clearInterval(interval);
-    };
-  }, []);
 
   const [fromCurrency, setFromCurrency] = useState<CurrencyCode>('USD');
   const [toCurrency, setToCurrency] = useState<CurrencyCode>('BOB');
@@ -60,7 +46,7 @@ export const CurrencyConverter: React.FC = () => {
     }
     const val = Number.isFinite(parsedAmount) ? parsedAmount : 0;
     try {
-      return convertAmount(val, fromCurrency, toCurrency, RATES_MAP);
+      return convertAmount(val, fromCurrency, toCurrency, ratesMap);
     } catch (e: any) {
       return {
         result: 0,

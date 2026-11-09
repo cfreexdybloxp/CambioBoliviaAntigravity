@@ -1,19 +1,27 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { CurrencyCode } from '../../types';
 import { calculateImportCost, formatCurrency } from '../../utils/financialMath';
-import { RATES_MAP } from '../../data/officialRates';
-import { ArrowRight, Calculator } from 'lucide-react';
+import { ArrowRight, Calculator, RefreshCw } from 'lucide-react';
+import { useLiveRates } from '../../context/LiveRateContext';
 
 interface CommercialCostCalculatorProps {
   onSendToMarginCalculator?: (unitCost: number) => void;
 }
 
 export const CommercialCostCalculator: React.FC<CommercialCostCalculatorProps> = ({ onSendToMarginCalculator }) => {
+  const { liveRate, ratesMap } = useLiveRates();
   // Manejamos los valores como strings para permitir borrar completamente el input sin ceros molestos
   const [purchasePrice, setPurchasePrice] = useState<string>('15');
   const [quantity, setQuantity] = useState<string>('100');
   const [currency, setCurrency] = useState<CurrencyCode>('USD');
-  const [exchangeRate, setExchangeRate] = useState<string>(RATES_MAP.USD.sellRate.toString());
+  const [exchangeRate, setExchangeRate] = useState<string>(() => liveRate.rate.toString());
+
+  // Sincroniza automáticamente la tasa si cambia la cotización oficial en vivo
+  useEffect(() => {
+    if (currency === 'USD') {
+      setExchangeRate(liveRate.rate.toString());
+    }
+  }, [liveRate.rate, currency]);
   const [freightCost, setFreightCost] = useState<string>('800');
   const [packagingCost, setPackagingCost] = useState<string>('200');
   const [customsTaxes, setCustomsTaxes] = useState<string>('1500');
@@ -110,8 +118,8 @@ export const CommercialCostCalculator: React.FC<CommercialCostCalculatorProps> =
                 onChange={(e) => {
                   const curr = e.target.value as CurrencyCode;
                   setCurrency(curr);
-                  if (curr !== 'BOB' && RATES_MAP[curr]) {
-                    setExchangeRate(RATES_MAP[curr].sellRate.toString());
+                  if (curr !== 'BOB' && ratesMap[curr]) {
+                    setExchangeRate(ratesMap[curr].sellRate.toString());
                   } else {
                     setExchangeRate('1');
                   }
@@ -129,9 +137,21 @@ export const CommercialCostCalculator: React.FC<CommercialCostCalculatorProps> =
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
-                Tipo de Cambio Aplicado (Bs)
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Tipo de Cambio Aplicado (Bs)
+                </label>
+                {currency === 'USD' && (
+                  <button
+                    type="button"
+                    onClick={() => setExchangeRate(liveRate.rate.toString())}
+                    className="text-[10px] text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-semibold"
+                  >
+                    <RefreshCw className="w-2.5 h-2.5" />
+                    En vivo: {liveRate.rate.toFixed(2)}
+                  </button>
+                )}
+              </div>
               <input
                 type="number"
                 min="0"

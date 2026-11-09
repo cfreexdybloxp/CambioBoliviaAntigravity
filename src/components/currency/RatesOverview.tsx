@@ -1,48 +1,51 @@
 import React from 'react';
 import { OFFICIAL_RATES, RATES_SNAPSHOT } from '../../data/officialRates';
-import { ExternalLink, Info } from 'lucide-react';
+import { ExternalLink, Info, RefreshCw } from 'lucide-react';
 import { getRateStaleness, formatDate } from '../../utils/dateFormatting';
+import { useLiveRates } from '../../context/LiveRateContext';
 
 export const RatesOverview: React.FC = () => {
-  const [liveRate, setLiveRate] = React.useState<import('../../utils/liveRateService').LiveRateData | null>(null);
-  React.useEffect(() => {
-    let cancelled = false;
-    const load = async () => {
-      const data = await import('../../utils/liveRateService').then(m => m.fetchLiveBcbRate());
-      if (!cancelled) setLiveRate(data);
-    };
-    load();
-    const interval = setInterval(load, 60000); // refresh every minute
-    return () => {
-      cancelled = true;
-      clearInterval(interval);
-    };
-  }, []);
+  const { liveRate, isLoading, refreshRate, lastUpdated } = useLiveRates();
 
   return (
     <div className="space-y-6">
 
       {/* Título de Sección */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          {/* Live Rate Badge */}
-          {liveRate && (
-            <div className="px-3 py-1.5 rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 text-xs font-medium flex items-center gap-1.5">
-              <span>🟢 En vivo</span>
-              <span>{liveRate.rate.toFixed(2)} Bs/USD</span>
-              <span>(corte {liveRate.cutoffDate})</span>
-            </div>
-          )}
-
         <div>
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Tipo de Cambio Oficial del BCB
-          </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Valores de la {RATES_SNAPSHOT.tableId}, publicada el {formatDate(RATES_SNAPSHOT.publishedOn)}.
+          <div className="flex items-center gap-3">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+              Tipo de Cambio Oficial del BCB
+            </h3>
+            {/* Live Rate Badge */}
+            <div className="px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-300 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-semibold flex items-center gap-1.5 shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>En vivo: <strong>{liveRate.rate.toFixed(2)} Bs/USD</strong></span>
+              <span className="text-slate-400 dark:text-slate-500 text-[10px] hidden md:inline">
+                (Corte: {liveRate.cutoffDate})
+              </span>
+            </div>
+          </div>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Valores oficiales de corte diario del Banco Central de Bolivia. Se actualizan automáticamente.
+            {lastUpdated && (
+              <span className="text-[11px] text-slate-400 dark:text-slate-500 ml-2">
+                · Último chequeo: {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+              </span>
+            )}
           </p>
         </div>
-        <div className="text-xs text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-lg self-start sm:self-auto shadow-sm">
-          El BCB publica un <strong>TCO único</strong> por jornada: no hay compra/venta oficial.
+
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <button
+            onClick={() => refreshRate()}
+            disabled={isLoading}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 shadow-sm transition-all disabled:opacity-50"
+            title="Consultar datos frescos del BCB ahora"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 ${isLoading ? 'animate-spin' : ''}`} />
+            <span>{isLoading ? 'Consultando...' : 'Actualizar ahora'}</span>
+          </button>
         </div>
       </div>
 
