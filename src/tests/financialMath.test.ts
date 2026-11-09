@@ -11,7 +11,7 @@ import {
 } from '../utils/financialMath';
 import { RATES_MAP } from '../data/officialRates';
 
-describe('Motor Matemático Financiero — Cambio Bolivia', () => {
+describe('Motor Matemático Financiero — CotizaBO', () => {
 
   describe('roundCurrency & formatCurrency', () => {
     it('debe redondear correctamente evitando fallos de coma flotante', () => {

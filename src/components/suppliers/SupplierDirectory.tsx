@@ -68,7 +68,7 @@ export const SupplierDirectory: React.FC = () => {
       phone,
       nitOrRegistry,
       verification: 'NO_VERIFICADO',
-      verificationSource: 'Declaración del propio proveedor. No comprobada por Cambio Bolivia.',
+      verificationSource: 'Declaración del propio proveedor. No comprobada por CotizaBO.',
       verifiedDate: ''
     };
 
@@ -120,7 +120,7 @@ export const SupplierDirectory: React.FC = () => {
               Aduana Nacional decomisa cualquier internación ilegal.
             </p>
             <p className="leading-relaxed text-amber-800 dark:text-amber-300/90 font-medium">
-              Por principios éticos y legales, <strong>Cambio Bolivia NO lista, NO promueve ni facilita</strong> contactos
+              Por principios éticos y legales, <strong>CotizaBO NO lista, NO promueve ni facilita</strong> contactos
               de ropa usada. Priorizamos confección textil boliviana nueva, calzado nacional e importación formal regulada.
             </p>
             <a

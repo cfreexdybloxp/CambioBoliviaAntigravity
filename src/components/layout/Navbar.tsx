@@ -11,6 +11,7 @@ import {
   Moon,
 } from 'lucide-react';
 import { Theme } from '../../utils/themeStore';
+import { CotizaBoLogo } from '../common/CotizaBoLogo';
 
 export type TabType = 'divisas' | 'calculadoras' | 'casas' | 'proveedores' | 'guias';
 
@@ -45,25 +46,9 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onTabChange, theme, o
           {/* ── Logo y Marca ── */}
           <div
             onClick={() => handleSelect('divisas')}
-            className="flex items-center gap-3 cursor-pointer group shrink-0"
+            className="flex items-center cursor-pointer group shrink-0"
           >
-            {/* Bandera Bolivia */}
-            <div className="flex flex-col w-7 h-7 rounded overflow-hidden shadow-md border border-slate-300 dark:border-slate-700">
-              <div className="h-1/3 bg-bolivia-red"></div>
-              <div className="h-1/3 bg-bolivia-yellow"></div>
-              <div className="h-1/3 bg-bolivia-green"></div>
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                  Cambio Bolivia
-                </span>
-                <span className="hidden sm:inline text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">
-                  TCO BCB
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 hidden sm:block">Plataforma Financiera y Económica Independiente</p>
-            </div>
+            <CotizaBoLogo size="md" showTagline={true} />
           </div>
 
           {/* ── Navegación Desktop ── */}

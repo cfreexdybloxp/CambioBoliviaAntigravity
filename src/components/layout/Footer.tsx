@@ -1,5 +1,6 @@
 import React from 'react';
 import { Shield, ExternalLink, Scale } from 'lucide-react';
+import { CotizaBoLogo } from '../common/CotizaBoLogo';
 
 interface FooterProps {
   onOpenLegalModal?: (section: 'terms' | 'privacy' | 'methodology' | 'normative') => void;
@@ -13,14 +14,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenLegalModal }) => {
 
           {/* Columna 1: Identidad y Misión */}
           <div className="md:col-span-1 space-y-3">
-            <div className="flex items-center gap-2">
-              <div className="flex flex-col w-5 h-5 rounded overflow-hidden shadow-sm border border-slate-300 dark:border-slate-700">
-                <div className="h-1/3 bg-bolivia-red"></div>
-                <div className="h-1/3 bg-bolivia-yellow"></div>
-                <div className="h-1/3 bg-bolivia-green"></div>
-              </div>
-              <span className="font-bold text-slate-900 dark:text-white text-base">Cambio Bolivia</span>
-            </div>
+            <CotizaBoLogo size="sm" showTagline={false} />
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
               Plataforma independiente dedicada a la transparencia cambiaria, formalización del comercio y educación financiera en Bolivia.
             </p>
@@ -109,7 +103,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenLegalModal }) => {
         </div>
 
         <div className="mt-10 pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 dark:text-slate-500 gap-4">
-          <p>© {new Date().getFullYear()} Cambio Bolivia. Datos abiertos, cálculos transparentes y soberanía financiera.</p>
+          <p>© {new Date().getFullYear()} CotizaBO. Datos abiertos, cálculos transparentes y soberanía financiera.</p>
           <p className="flex items-center gap-1">
             Hecho con rigor para el pueblo boliviano 🇧🇴
           </p>

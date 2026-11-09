@@ -145,7 +145,7 @@ export const LegalDisclaimerModal: React.FC<LegalDisclaimerModalProps> = ({
                 desde el 21/04/2007 y su comercialización desde el 01/03/2008.
               </p>
               <p>
-                <strong>Cambio Bolivia</strong> rechaza terminantemente cualquier facilitación o publicación de proveedores de ropa usada o mercancías ilícitas. Todas nuestras herramientas de costeo y directorios comerciales están orientados al fomento de la industria textil nacional, confección nueva, artesanía, cuero y comercio legal formal.
+                <strong>CotizaBO</strong> rechaza terminantemente cualquier facilitación o publicación de proveedores de ropa usada o mercancías ilícitas. Todas nuestras herramientas de costeo y directorios comerciales están orientados al fomento de la industria textil nacional, confección nueva, artesanía, cuero y comercio legal formal.
               </p>
             </div>
           )}
@@ -175,7 +175,7 @@ export const LegalDisclaimerModal: React.FC<LegalDisclaimerModalProps> = ({
                 Términos y Condiciones del Servicio
               </h4>
               <p>
-                La información provista por Cambio Bolivia es de naturaleza estrictamente orientativa y educativa. Los precios de venta y compra efectivos en ventanilla física dependen de cada establecimiento financiero independiente y de la disponibilidad de divisas.
+                La información provista por CotizaBO es de naturaleza estrictamente orientativa y educativa. Los precios de venta y compra efectivos en ventanilla física dependen de cada establecimiento financiero independiente y de la disponibilidad de divisas.
               </p>
               <p>
                 El usuario es el único responsable de corroborar las cifras antes de firmar contratos comerciales o ejecutar operaciones cambiarias de gran escala.

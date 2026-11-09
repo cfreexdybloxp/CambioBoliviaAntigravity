@@ -208,7 +208,7 @@ export const CommercialProformaSheet: React.FC = () => {
         <div className="pt-8 border-t border-slate-200 flex justify-between items-end text-xs text-slate-500">
           <div>
             <p>Validez de la oferta: 15 días calendario.</p>
-            <p>Generado a través de Cambio Bolivia (Plataforma Financiera Independiente).</p>
+            <p>Generado a través de CotizaBO (Plataforma Financiera Independiente).</p>
           </div>
           <div className="text-center w-48 border-t border-slate-400 pt-1">
             <span className="font-semibold text-slate-700 block">Firma / Sello Responsable</span>

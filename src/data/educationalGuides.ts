@@ -130,7 +130,7 @@ La Aduana Nacional decomisa cualquier internación ilegal. Dichos lotes no son s
     keyTakeaways: [
       'La importación comercial de ropa usada está prohibida por ley y no es susceptible de nacionalización.',
       'El contrabando arriesga la incautación total de capital y sanciones penales.',
-      'Cambio Bolivia fomenta exclusivamente el comercio lícito, la confección nacional y la formalización.'
+      'CotizaBO fomenta exclusivamente el comercio lícito, la confección nacional y la formalización.'
     ]
   },
   {
