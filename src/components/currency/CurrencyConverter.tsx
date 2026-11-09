@@ -9,7 +9,8 @@ export const CurrencyConverter: React.FC = () => {
   // Manejamos el monto como string para permitir borrar completamente sin que se pegue un cero
   const [liveRate, setLiveRate] = React.useState<import('../../utils/liveRateService').LiveRateData | null>(null);
   const [amount, setAmount] = useState<string>('100');
-  const [amount, setAmount] = useState<string>('100');
+
+
   React.useEffect(() => {
     let cancelled = false;
     const load = async () => {

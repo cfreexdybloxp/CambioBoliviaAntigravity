@@ -49,21 +49,21 @@ describe('Tipos de cambio oficiales del BCB', () => {
 
   it('debe apuntar a la tabla de cotizaciones vigente del BCB', () => {
     expect(RATES_SNAPSHOT.sourceUrl).toBe(
-      'https://www.bcb.gob.bo/librerias/indicadores/otras/ultimo.php'
+      'https://www.bcb.gob.bo/bcb_tco_publico_descargar_csv.php'
     );
     expect(RATES_SNAPSHOT.institution).toContain('Banco Central de Bolivia');
   });
 
-  it('debe conservar los valores publicados el 30/10/2026', () => {
+  it('debe conservar los valores publicados el 03/11/2026', () => {
     // Si se actualiza el snapshot, actualizar también estas expectativas
     // junto con `publishedOn` y `retrievedOn`.
-    expect(getOfficialRate('USD')?.sellRate).toBe(12.11);
-    expect(getOfficialRate('EUR')?.sellRate).toBe(13.52559);
-    expect(getOfficialRate('PEN')?.sellRate).toBe(3.50071);
-    expect(getOfficialRate('BRL')?.sellRate).toBe(2.23518);
-    expect(getOfficialRate('ARS')?.sellRate).toBe(0.00787);
-    expect(getOfficialRate('CLP')?.sellRate).toBe(0.01222);
-    expect(getOfficialRate('UFV')?.sellRate).toBe(3.36581);
+    expect(getOfficialRate('USD')?.sellRate).toBe(12.06);
+    expect(getOfficialRate('EUR')?.sellRate).toBe(13.12);
+    expect(getOfficialRate('PEN')?.sellRate).toBe(3.22);
+    expect(getOfficialRate('BRL')?.sellRate).toBe(2.12);
+    expect(getOfficialRate('ARS')?.sellRate).toBe(0.0121);
+    expect(getOfficialRate('CLP')?.sellRate).toBe(0.0128);
+    expect(getOfficialRate('UFV')?.sellRate).toBe(2.58321);
   });
 
   it('debe derivar RATES_MAP de OFFICIAL_RATES sin duplicar cifras', () => {

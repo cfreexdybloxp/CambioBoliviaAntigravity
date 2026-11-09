@@ -34,18 +34,18 @@ describe('Motor Matemático Financiero — Cambio Bolivia', () => {
 
   describe('convertAmount (Conversor de Divisas)', () => {
     it('debe convertir BOB a USD correctamente dividiendo entre el TCO oficial', () => {
-      // TCO del USD publicado por el BCB (30/10/2026): 12,11 Bs por USD
-      // 1211 Bs / 12,11 = 100 USD
-      const result = convertAmount(1211, 'BOB', 'USD', RATES_MAP);
+      // TCO del USD publicado por el BCB (corte 03/11/2026): 12,06 Bs por USD
+      // 1206 Bs / 12,06 = 100 USD
+      const result = convertAmount(1206, 'BOB', 'USD', RATES_MAP);
       expect(result.result).toBe(100);
-      expect(result.rateApplied).toBe(12.11);
+      expect(result.rateApplied).toBe(12.06);
     });
 
     it('debe convertir USD a BOB multiplicando por el TCO oficial', () => {
-      // 50 USD * 12,11 Bs = 605,50 Bs
+      // 50 USD * 12,06 Bs = 603,00 Bs
       const result = convertAmount(50, 'USD', 'BOB', RATES_MAP);
-      expect(result.result).toBe(605.5);
-      expect(result.rateApplied).toBe(12.11);
+      expect(result.result).toBe(603);
+      expect(result.rateApplied).toBe(12.06);
     });
 
     it('debe manejar conversión de misma moneda (BOB a BOB)', () => {
