@@ -25,9 +25,9 @@ const BROWSER_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 
 // Tasa base verificada de contingencia (último corte oficial del BCB)
 export const BASELINE_TCO: LiveRateData = {
-  rate: 11.81,
-  cutoffDate: '2026-11-06',
-  validityDate: '2026-11-07 al 2026-11-09',
+  rate: 11.71,
+  cutoffDate: '2026-11-10',
+  validityDate: '2026-11-11',
   retrievedAt: new Date().toISOString(),
   source: 'Banco Central de Bolivia (BCB)',
   isLive: false,
@@ -68,15 +68,16 @@ export async function fetchLiveBcbRate(): Promise<LiveRateData> {
   // 1. Intentar endpoint Cloudflare Pages Function (/api/rate)
   try {
     const resp = await fetch('/api/rate', {
-      headers: { 'Accept': 'application/json' }
+      headers: { 'Accept': 'application/json' },
+      signal: AbortSignal.timeout(5000)
     });
     if (resp.ok) {
       const json = await resp.json();
       if (json && json.rate && Number.isFinite(json.rate)) {
         const live: LiveRateData = {
           rate: json.rate,
-          cutoffDate: json.cutoffDate || '2026-11-03',
-          validityDate: json.validityDate || '2026-11-04',
+          cutoffDate: json.cutoffDate || '2026-11-10',
+          validityDate: json.validityDate || '2026-11-11',
           retrievedAt: json.retrievedAt || new Date().toISOString(),
           source: json.source || 'Banco Central de Bolivia (BCB)',
           isLive: true,
@@ -95,10 +96,39 @@ export async function fetchLiveBcbRate(): Promise<LiveRateData> {
   const from = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
   const targetUrl = `${BCB_CSV_URL}?desde=${from}&hasta=${today}`;
 
-  // Proxy 1: allorigins.win
+  // Proxy 1: Jina Reader (alta velocidad)
+  try {
+    const proxyUrl = `https://r.jina.ai/${targetUrl}`;
+    const resp = await fetch(proxyUrl, {
+      headers: { 'User-Agent': BROWSER_UA },
+      signal: AbortSignal.timeout(6000)
+    });
+    if (resp.ok) {
+      const text = await resp.text();
+      const parsed = parseBcbCsvClient(text);
+      const live: LiveRateData = {
+        rate: parsed.rate,
+        cutoffDate: parsed.cutoffDate,
+        validityDate: parsed.validityDate,
+        retrievedAt: new Date().toISOString(),
+        source: 'Banco Central de Bolivia (BCB) vía proxy CORS',
+        isLive: true,
+        method: 'jina-cors'
+      };
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(live));
+      } catch {}
+      return live;
+    }
+  } catch {}
+
+  // Proxy 2: allorigins.win
   try {
     const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
-    const resp = await fetch(proxyUrl, { headers: { 'User-Agent': BROWSER_UA } });
+    const resp = await fetch(proxyUrl, {
+      headers: { 'User-Agent': BROWSER_UA },
+      signal: AbortSignal.timeout(6000)
+    });
     if (resp.ok) {
       const text = await resp.text();
       const parsed = parseBcbCsvClient(text);
@@ -110,29 +140,6 @@ export async function fetchLiveBcbRate(): Promise<LiveRateData> {
         source: 'Banco Central de Bolivia (BCB) vía proxy CORS',
         isLive: true,
         method: 'allorigins-cors'
-      };
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(live));
-      } catch {}
-      return live;
-    }
-  } catch {}
-
-  // Proxy 2: corsproxy.io
-  try {
-    const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`;
-    const resp = await fetch(proxyUrl, { headers: { 'User-Agent': BROWSER_UA } });
-    if (resp.ok) {
-      const text = await resp.text();
-      const parsed = parseBcbCsvClient(text);
-      const live: LiveRateData = {
-        rate: parsed.rate,
-        cutoffDate: parsed.cutoffDate,
-        validityDate: parsed.validityDate,
-        retrievedAt: new Date().toISOString(),
-        source: 'Banco Central de Bolivia (BCB) vía proxy CORS',
-        isLive: true,
-        method: 'corsproxy-io'
       };
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(live));

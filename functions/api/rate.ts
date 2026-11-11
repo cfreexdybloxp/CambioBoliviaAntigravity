@@ -85,7 +85,8 @@ async function fetchBcbContent(): Promise<{ text: string; method: string }> {
         'User-Agent': BROWSER_UA,
         'Accept': '*/*',
         'Accept-Language': 'es-BO,es;q=0.9,en;q=0.8'
-      }
+      },
+      signal: AbortSignal.timeout(4000)
     });
     if (resp.ok) {
       const text = await resp.text();
@@ -95,42 +96,32 @@ async function fetchBcbContent(): Promise<{ text: string; method: string }> {
     }
   } catch {}
 
-  // Intento 2: Proxy CORS allorigins.win (gratuito y sin límite)
+  // Intento 2: Proxy Jina Reader (alta velocidad y 100% gratuito)
+  try {
+    const proxyUrl = `https://r.jina.ai/${targetUrl}`;
+    const resp = await fetch(proxyUrl, {
+      headers: { 'User-Agent': BROWSER_UA },
+      signal: AbortSignal.timeout(12000)
+    });
+    if (resp.ok) {
+      const text = await resp.text();
+      if (text.includes('TCO') || text.includes('Tipo de Cambio')) {
+        return { text, method: 'proxy-jina' };
+      }
+    }
+  } catch {}
+
+  // Intento 3: Proxy CORS allorigins.win (gratuito)
   try {
     const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
     const resp = await fetch(proxyUrl, {
-      headers: { 'User-Agent': BROWSER_UA }
+      headers: { 'User-Agent': BROWSER_UA },
+      signal: AbortSignal.timeout(10000)
     });
     if (resp.ok) {
       const text = await resp.text();
       if (text.includes('TCO') || text.includes('Tipo de Cambio')) {
         return { text, method: 'proxy-allorigins' };
-      }
-    }
-  } catch {}
-
-  // Intento 3: Proxy CORS corsproxy.io
-  try {
-    const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`;
-    const resp = await fetch(proxyUrl, {
-      headers: { 'User-Agent': BROWSER_UA }
-    });
-    if (resp.ok) {
-      const text = await resp.text();
-      if (text.includes('TCO') || text.includes('Tipo de Cambio')) {
-        return { text, method: 'proxy-corsproxy' };
-      }
-    }
-  } catch {}
-
-  // Intento 4: Jina Reader como respaldo
-  try {
-    const proxyUrl = `https://r.jina.ai/${targetUrl}`;
-    const resp = await fetch(proxyUrl);
-    if (resp.ok) {
-      const text = await resp.text();
-      if (text.includes('TCO') || text.includes('Tipo de Cambio')) {
-        return { text, method: 'proxy-jina' };
       }
     }
   } catch {}
@@ -174,9 +165,9 @@ export async function onRequestGet(): Promise<Response> {
       success: true,
       source: 'Banco Central de Bolivia (BCB) - Respaldo de Contingencia',
       currency: 'USD',
-      rate: 11.81,
-      cutoffDate: '2026-11-06',
-      validityDate: '2026-11-07 al 2026-11-09',
+      rate: 11.71,
+      cutoffDate: '2026-11-10',
+      validityDate: '2026-11-11',
       retrievedAt: new Date().toISOString(),
       method: 'fallback-verified',
       sourceUrl: 'https://www.bcb.gob.bo/?q=cotizaciones_tc',

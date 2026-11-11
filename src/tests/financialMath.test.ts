@@ -34,18 +34,18 @@ describe('Motor Matemático Financiero — CotizaBO', () => {
 
   describe('convertAmount (Conversor de Divisas)', () => {
     it('debe convertir BOB a USD correctamente dividiendo entre el TCO oficial', () => {
-      // TCO del USD publicado por el BCB (corte vigente 06/11/2026): 11,81 Bs por USD
-      // 1181 Bs / 11,81 = 100 USD
-      const result = convertAmount(1181, 'BOB', 'USD', RATES_MAP);
+      // TCO del USD publicado por el BCB (corte vigente 10/11/2026): 11,71 Bs por USD
+      // 1171 Bs / 11,71 = 100 USD
+      const result = convertAmount(1171, 'BOB', 'USD', RATES_MAP);
       expect(result.result).toBe(100);
-      expect(result.rateApplied).toBe(11.81);
+      expect(result.rateApplied).toBe(11.71);
     });
 
     it('debe convertir USD a BOB multiplicando por el TCO oficial', () => {
-      // 50 USD * 11,81 Bs = 590,50 Bs
+      // 50 USD * 11,71 Bs = 585,50 Bs
       const result = convertAmount(50, 'USD', 'BOB', RATES_MAP);
-      expect(result.result).toBe(590.5);
-      expect(result.rateApplied).toBe(11.81);
+      expect(result.result).toBe(585.5);
+      expect(result.rateApplied).toBe(11.71);
     });
 
     it('debe manejar conversión de misma moneda (BOB a BOB)', () => {
